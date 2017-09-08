@@ -13,6 +13,7 @@ import { Network, toastShort } from '../../utils';
 import api from '../../api';
 import { ParamsIcon } from '../../common/Normal';
 import { theme, screen } from '../../common';
+import {setSpText,scaleSize} from '../../common/scale'
 
 // create a component
 export default class WarnInfoList extends Component {
@@ -126,7 +127,7 @@ export default class WarnInfoList extends Component {
         }
         return (
             <View key={i} style={styles.warnItem}>
-                <Icon name='exclamation-circle' size={22} color={warnColor}></Icon>
+                <Icon name='exclamation-circle' size={24} color={warnColor}></Icon>
                 <View style={styles.warnName}>
                     <Text>{item.codename}</Text>
                     <Text>{item.createTime}</Text>
@@ -145,7 +146,7 @@ export default class WarnInfoList extends Component {
             if (warnInfo.status == 2) {
                 return (<View style={styles.warnList}>
                         <View style={styles.warnAreaTitle}>
-                            <Icon name='map-marker' size={18} color={theme.iconColor}></Icon>
+                            <Icon name='map-marker' size={24} color={theme.iconColor}></Icon>
                             <Text style={styles.warnAreaTitleText}>{areaData.orgName}</Text>
                         </View>
                         <View style={styles.nodata}><Text>{warnInfo.result}</Text></View>
@@ -154,7 +155,7 @@ export default class WarnInfoList extends Component {
                 return (
                     <View style={styles.warnList}>
                         <View style={styles.warnAreaTitle}>
-                            <Icon name='map-marker' size={18} color={theme.iconColor}></Icon>
+                            <Icon name='map-marker' size={24} color={theme.iconColor}></Icon>
                             <Text style={styles.warnAreaTitleText}>{areaData.orgName}</Text>
                         </View>
                         {warnInfo.result.map((item, i) => this.renderItem(item, i))}
@@ -187,15 +188,12 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     warnAreaTitleText: {
-        paddingLeft: 8,
-        fontSize: 14,
-        fontWeight: "400",
+        paddingLeft: 10,
 
     },
-    warnIcon: { width: 32, height: 32 },
-    paramsIcon: { width: 32, height: 32, marginLeft: 10 },
-    warnName: { paddingLeft: 12, paddingRight: 10 },
-    warnValue: { paddingLeft: 12, flex: 1 },
+    paramsIcon: { width: 24, height:24, marginLeft: 10 },
+    warnName: { paddingHorizontal:10},
+    warnValue: { paddingLeft:0 },
     nodata: {
         padding: 10,
         alignItems: 'center',
@@ -209,9 +207,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#ccc'
     },
     warnLevel: {
-        marginTop: -12,
-        marginRight: -8,
-        width: 0,
+        position: 'absolute',
+        right:0,
+        top:0,
         borderWidth: 25,
         borderLeftColor: '#fff',
         borderBottomColor: '#fff',
@@ -219,7 +217,7 @@ const styles = StyleSheet.create({
     warnLevelText: {
         position: 'absolute',
         color: '#fff',
-        fontSize: 12,
+        // fontSize: 12,
         transform: [{ translateY: -15 }, { rotate: '45deg' }]
     }
 });

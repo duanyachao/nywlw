@@ -145,7 +145,9 @@ export default class LoginScene extends Component {
                 <Image style={styles.logo} source={require('../../imgs/logre/img_dl_logo.png')}></Image>
                 <View style={styles.loginForm}>
                     <View style={styles.textInput}>
-                        <Icon style={styles.icon} name='user' size={18} color="#fff"></Icon>
+                        <View style={styles.iconWrapper}>
+                            <Icon name='user' size={24} color="#fff"></Icon>
+                        </View>
                         <TextInput style={styles.textStyle}
                             placeholder="账号/用户名"
                             placeholderTextColor="#fff"
@@ -156,7 +158,9 @@ export default class LoginScene extends Component {
                         </TextInput>
                     </View>
                     <View style={[styles.textInput]}>
-                        <Icon style={styles.icon} name='lock' size={18} color="#fff"></Icon>
+                        <View style={styles.iconWrapper}>
+                            <Icon name='lock' size={24} color="#fff"></Icon>
+                        </View>
                         <TextInput style={styles.textStyle}
                             placeholder="密码"
                             placeholderTextColor="#fff"
@@ -168,7 +172,9 @@ export default class LoginScene extends Component {
                         </TextInput>
                     </View>
                     <View style={[styles.textInput]}>
-                        <Icon style={styles.icon} name='mobile' size={18} color="#fff"></Icon>
+                        <View style={styles.iconWrapper}>
+                            <Icon name='mobile' size={24} color="#fff"></Icon>
+                        </View>
                         <TextInput style={styles.textStyle}
                             placeholder="手机号"
                             placeholderTextColor="#fff"
@@ -208,34 +214,27 @@ const styles = StyleSheet.create({
     },
     textInput: {
         flexDirection: 'row',
-        alignItems: 'center',
-        height: 48,
-        borderBottomWidth: 1,
-        borderBottomColor: 'rgba(255,255,255,.6)'
+        alignItems: 'stretch',
+        borderBottomWidth:screen.onePixel,
+        borderBottomColor: 'rgba(255,255,255,.6)',
 
     },
-
-    icon: {
-        marginLeft: 14,
-        marginRight: 0,
-        alignItems: 'center'
+    iconWrapper:{
+        justifyContent:'center',
+        width:36,
+        alignItems: 'center',
     },
     textStyle: {
-        fontSize: 13,
         flex: 1,
         color: '#fff',
-        justifyContent: 'center'
+
     },
     btnTextStyle: {
-        fontSize: 15,
         color: 'rgb(55,179,117)',
 
     },
     btnStyle: {
-        flexDirection: 'row',
-        height: 37,
-        paddingHorizontal: 20,
-        justifyContent: 'center',
+        paddingVertical:10,
         alignItems: 'center',
         marginTop: 48,
         backgroundColor: '#fff',
