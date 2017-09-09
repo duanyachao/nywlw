@@ -67,12 +67,11 @@ export default class RootScene extends Component {
             }
         });
         this.loginListener = DeviceEventEmitter.addListener('loginSuccess', (msg) => {
-            console.info(msg)
             JPushModule.setAlias(msg, (map) => {
                 if (map.errorCode === 0) {
-                    // console.log("set alias succeed");
+                    // alert("set alias succeed");
                 } else {
-                    // console.log("set alias failed, errorCode: " + map.errorCode);
+                    // alert("set alias failed, errorCode: " + map.errorCode);
                 }
             });
 
@@ -82,6 +81,7 @@ export default class RootScene extends Component {
         });
 
         JPushModule.addReceiveNotificationListener((message) => {
+            DeviceEventEmitter.emit('receiveWarnMsg', message)
             let msgType = eval('(' + message.extras + ')');
             this.setState({
                 message: message.alertContent,
@@ -112,9 +112,7 @@ export default class RootScene extends Component {
                     ],
                     { cancelable: false }
                 )
-            }
-            // console.info(message)
-            DeviceEventEmitter.emit('receiveMsg', message)
+            }            
         })
         // JPushModule.addReceiveOpenNotificationListener((message) => {
         //     if (this.props.navigation === undefined) {

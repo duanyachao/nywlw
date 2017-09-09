@@ -20,6 +20,7 @@ import { Header, Button } from '../../components';
 import { Network, toastShort } from '../../utils';
 import api from '../../api';
 import { NavigationActions } from 'react-navigation';
+import JPushModule from 'jpush-react-native';
 // create a component
 class MineScene extends Component {
     constructor(props) {
@@ -72,6 +73,13 @@ class MineScene extends Component {
                                     ]
                                 })
                                 this.props.navigation.dispatch(resetAction);
+                                JPushModule.deleteAlias((map) => {
+                                    if (map.errorCode === 0) {
+                                        // alert("delete alias succeed");
+                                    } else {
+                                        // alert("delete alias failed, errorCode: " + map.errorCode);
+                                    }
+                                })
                             })
                             );
 

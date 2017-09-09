@@ -53,25 +53,23 @@ export default class WarnInfoList extends Component {
                         })
                         
                     } else {
-                        console.info(res)
+                        // console.info(res)
                     }
                     DeviceEventEmitter.emit('报警状态',res);         
                 })
             }
         } catch (error) {
-            console.info(error)
+            // console.info(error)
         }
 
     }
     componentDidMount() {
         this.requestWarnData()
-        // this.timer = setInterval(() => { this.requestWarnData() }, 300000);
         this.warnMsgListener=DeviceEventEmitter.addListener('receiveWarnMsg',(msg)=>{
             this.requestWarnData()    
         })
     }
     componentWillUnmount() {
-        // this.timer && clearInterval(this.timer);
         this.warnMsgListener.remove()
     }
     renderItem(item, i) {
@@ -193,7 +191,7 @@ const styles = StyleSheet.create({
     },
     paramsIcon: { width: 24, height:24, marginLeft: 10 },
     warnName: { paddingHorizontal:10},
-    warnValue: { paddingLeft:0 },
+    warnValue: { paddingLeft:10 },
     nodata: {
         padding: 10,
         alignItems: 'center',
