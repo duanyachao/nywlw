@@ -62,7 +62,7 @@ class MineScene extends Component {
                         global.token = null;
                         global.userId = null;
                         storage.remove({
-                            key: 'loginInfo'
+                            key: 'loginInfo',
                         })
                             .then(
                             InteractionManager.runAfterInteractions(() => {
@@ -170,7 +170,7 @@ class MineScene extends Component {
                             </View>
                             <View style={rowStyle.myItemRight}>
                                 <Text style={rowStyle.itemTip}></Text>
-                                <Text style={{ color: '#c0c0c0', paddingRight: 10 }}>400-001-3876</Text>
+                                <Text style={{ color: '#c0c0c0', paddingRight: 10 }}>400-083-2531</Text>
                                 <Icon style={rowStyle.arrowIcon} name='angle-right' size={18} color="#ccc"></Icon>
                             </View>
                         </View>
@@ -191,7 +191,7 @@ class MineScene extends Component {
                         btnStyle={styles.loginOutBtn}
                         btnTextStyle={styles.btnTip}
                         onPress={() => this.loginOut()}
-                        title='退出账户'>
+                        title='退出'>
                     </Button>
                 </View>
             </View>

@@ -4,6 +4,7 @@ import { InteractionManager,View, Text, StyleSheet } from 'react-native';
 import { StackNavigator, TabNavigator, TabBarBottom } from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import WarnScene from './Warn/WarnScene';
+import EnvDataScene from './EnvData/EnvDataScene';
 import TaskScene from './Task/TaskScene';
 import ProductScene from './Product/ProductScene';
 import DeviceScene from './Device/DeviceScene';
@@ -15,7 +16,7 @@ import { TabBarItem, Header,} from '../components';
 import JPushModule from 'jpush-react-native';
 const Tabs = TabNavigator({
     Warn: {
-        screen: WarnScene,
+        screen: EnvDataScene,
         navigationOptions: ({navigation})=> TabOptions('报警',navigation,'warning',true,'报警信息')
     },
     Task: {
@@ -30,10 +31,6 @@ const Tabs = TabNavigator({
         screen: DeviceScene,
         navigationOptions: ({navigation})=> TabOptions('设备',navigation,'sliders',true,'设备管理')
     },
-    // Ebusiness: {
-    //     screen: EbusinessScene,
-    //     navigationOptions: ({navigation})=> TabOptions('农资',navigation,'shopping-cart',true,'农资商城')
-    // },
     Video: {
         screen: VideoScene,
         navigationOptions: ({navigation})=> TabOptions('监控',navigation,'video-camera',true,'视频监控')
@@ -59,7 +56,7 @@ const Tabs = TabNavigator({
             labelStyle: {
                 fontSize: theme.tabFontSize,
             },
-            style: { backgroundColor: '#fff' },
+            style: { backgroundColor: 'blue' },
         },
     }
 );

@@ -20,7 +20,7 @@ import WarnScene from './scene/Warn/WarnScene';
 import TaskScene from './scene/Task/TaskScene';
 import ProductScene from './scene/Product/ProductScene';
 import DeviceScene from './scene/Device/DeviceScene';
-import EbusinessScene from './scene/Ebusiness/EbusinessScene';
+import EnvDataScene from './scene/EnvData/EnvDataScene';
 import MineScene from './scene/Mine/MineScene';
 import UserInfoScene from './scene/Mine/UserInfoScene'
 import MyprofitScene from './scene/Mine/MyprofitScene'
@@ -155,7 +155,7 @@ export default class RootScene extends Component {
 
 const TabScene = TabNavigator({
     Warn: {
-        screen: WarnScene,
+        screen: EnvDataScene,
         navigationOptions: ({navigation}) => TabOptions('报警', navigation, 'warning', true, '报警信息')
     },
     Task: {
@@ -170,10 +170,6 @@ const TabScene = TabNavigator({
         screen: DeviceScene,
         navigationOptions: ({navigation}) => TabOptions('设备', navigation, 'sliders', true, '设备管理')
     },
-    // Ebusiness: {
-    //     screen: EbusinessScene,
-    //     navigationOptions: ({navigation})=> TabOptions('农资',navigation,'shopping-cart',true,'农资商城')
-    // },
     Video: {
         screen: VideoScene,
         navigationOptions: ({navigation}) => TabOptions('监控', navigation, 'video-camera', true, '视频监控')

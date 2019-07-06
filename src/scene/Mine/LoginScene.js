@@ -104,15 +104,18 @@ export default class LoginScene extends Component {
                         phoneNum: this.state.phoneNum,
                         userId: this.state.userId
                     }
-                }).then(()=>{
+                })
+                storage.load({
+                    key:'loginInfo'
+                })
+                .then(()=>{
                     DeviceEventEmitter.emit('loginSuccess',this.state.loginName)
                     this.goRootScene()
-                }
-                );
+                });
 
             } else {
                 toastShort('登录失败，请重新尝试');
-                console.info(res)
+                // console.info(res)
             }
             this.setState({
                 visible: !this.state.visible
