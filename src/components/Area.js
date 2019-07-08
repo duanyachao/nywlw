@@ -81,7 +81,6 @@ export default class Area extends Component {
     render() {
         let selectIndex=this.state.selectIndex;
         let selectArea=this.state.selectArea;
-        console.info(selectIndex)
         return (
             <View style={pickerStyle.container}>
                 <View style={pickerStyle.pickerTip}>

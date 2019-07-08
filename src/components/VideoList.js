@@ -60,14 +60,14 @@ export default class VideoList extends Component {
     componentWillReceiveProps(nextProps) {
         Picker.hide()
         let videoList = nextProps.videoList;
-        if (videoList) {
+        if (videoList && videoList.length>0) {
             this.setState({
                 vcameraName: videoList[0].vcameraName,
                 forwordUrl: videoList[0].forwordUrl
             })
         }
 
-
+        return true
     }
     render() {
         return (

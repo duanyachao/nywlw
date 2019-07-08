@@ -86,7 +86,6 @@ export default class DeviceItem extends Component{
     componentWillReceiveProps(nextProps){
         if(nextProps.rowData!==this.props.rowData){
             let status=nextProps.rowData.VALUE;
-            console.info(status)
             this.changeStatus(status); 
         }
         return true

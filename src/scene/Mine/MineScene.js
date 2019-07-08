@@ -154,12 +154,12 @@ class MineScene extends Component {
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => {
-                        var url = 'tel:4000013876';
+                        var url = 'tel:4000832531';
                         Linking.canOpenURL(url).then(supported => {
                             if (supported) {
                                 Linking.openURL(url);
                             } else {
-                                console.log('无法打开该URI: ' + url);
+                                // console.log('无法打开该URI: ' + url);
                             }
                         })
                     }}>

@@ -8,8 +8,11 @@ export default {
     tabFontSize:12,
     iconColor:'rgb(55,179,117)',
     nodata: {
-        padding: 10,
+        display: 'flex',
+        flex: 1,
+        justifyContent: 'center',
         alignItems: 'center',
+        padding: 10,
 
     },
 }
