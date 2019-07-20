@@ -24,6 +24,7 @@ export default class WarnScene extends Component {
             terminalSerialNum: null,
             envDataList: null,
             infoTime:null,
+            bTypeName:null,
             noWarn: true
         }
     }
@@ -77,7 +78,14 @@ export default class WarnScene extends Component {
         })
     }
     renderItem(item) {
-        return (<EnvDataInfoList envData={item.item}></EnvDataInfoList>)
+        let envCode=Object.keys(item.item)[0];
+        let bTypeName=this.state.bTypeName;
+        if (envCode=='THI' && bTypeName=='温室大棚') {
+            return(<View></View>)
+        } else {
+            return (<EnvDataInfoList envData={item.item}></EnvDataInfoList>)    
+        }
+        
     }
     keyExtractor = (item, index) =>index;
     renderFlistFooter=()=>{
@@ -104,6 +112,28 @@ export default class WarnScene extends Component {
         )
     } 
     componentDidMount() {
+        // console.info(bTypeName)
+        storage.load({
+            key:'userInfo'
+        }).then((ret)=>{
+            // console.info(JSON.stringify(ret))
+            this.setState({
+                bTypeName:ret.bTypeName
+            })
+        })
+        .catch(err => {
+            // 如果没有找到数据且没有sync方法，
+            // 或者有其他异常，则在catch中返回
+            console.warn(err.message);
+            switch (err.name) {
+              case 'NotFoundError':
+                // TODO;
+                break;
+              case 'ExpiredError':
+                // TODO
+                break;
+            }
+          })
         this.warnListener = DeviceEventEmitter.addListener('报警状态', (msg) => {
             // console.info(msg)
             (msg.meta.success && msg.data && msg.data.status !== 0) ? this.setState({ noWarn: false }) : null

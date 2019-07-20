@@ -31,7 +31,7 @@ class UserInfoScene extends Component {
     }
     componentDidMount() {
         const {state,goBack} = this.props.navigation;
-        console.info(state)
+        // console.info(state)
         this.setState({
             realName: state.params.userInfo.realName,
             phoneNum: state.params.userInfo.phoneNum,

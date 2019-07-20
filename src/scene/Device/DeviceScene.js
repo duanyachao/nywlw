@@ -29,6 +29,7 @@ export default class Devices extends Component {
             };
             let params = { "orgId": nextState.orgId };
             Network.get(api.HOST + api.DEVICES_STATUS, params, headers, (res) => {
+                // console.info(res)
                 if(res.meta.success){
                     this.setState({
                         devices:res.data

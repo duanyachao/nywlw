@@ -79,6 +79,7 @@ export default class DeviceItem extends Component{
     }
     componentDidMount(){
         const {rowData}=this.props;
+        // console.info(JSON.stringify(rowData))
         let status=rowData.VALUE;
         this.changeStatus(status);    
         

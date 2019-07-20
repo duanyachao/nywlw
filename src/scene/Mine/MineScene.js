@@ -30,7 +30,6 @@ class MineScene extends Component {
         }
     }
     getUserInfo() {
-        const {state} = this.props.navigation;
         let headers = {
             'X-Token': token
         };
@@ -90,7 +89,7 @@ class MineScene extends Component {
 
     }
     render() {
-        console.info(this.state.userInfo)
+        // console.info(this.state.userInfo)
         return (
             <View style={styles.container}>
                 <View style={[styles.userWrapper, styles.marginBottom]}>
