@@ -58,8 +58,9 @@ class MineScene extends Component {
             [
                 {
                     text: '确定', onPress: () => {
-                        global.token = null;
-                        global.userId = null;
+                        // global.token = null;
+                        // global.userId = null;
+                        // global.weatherStationOrgId=null;
                         storage.remove({
                             key: 'loginInfo',
                         })

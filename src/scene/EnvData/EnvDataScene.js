@@ -12,6 +12,7 @@ import { theme, screen } from '../../common';
 import { Network, toastShort } from '../../utils';
 import api from '../../api';
 import EnvDataInfoList from './EnvDataInfoList';
+import WeatherDataList from './WeatherDataList';
 export default class WarnScene extends Component {
     static navigationOptions = {
         header: <Header title='报警信息'></Header>
@@ -146,7 +147,9 @@ export default class WarnScene extends Component {
     render() {
         return (
             <View style={styles.container}>
+                <WeatherDataList/>
                 <Area callbackParent={(orgId, terminalId, terminalSerialNum) => this.areaChange(orgId, terminalId, terminalSerialNum)}></Area>
+                
                 {this.state.envDataList ? this.renderEnvDataInfoList(this.state.envDataList) : <View style={styles.noWarnWrapper}><Text>暂无数据</Text></View>}
             </View>
         );

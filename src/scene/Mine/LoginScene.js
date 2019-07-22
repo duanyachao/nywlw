@@ -106,6 +106,7 @@ export default class LoginScene extends Component {
                 })
                 global.userId = res.data.user.userId;
                 global.token = res.data.token;
+                global.weatherStationOrgId=res.data.user.orgId;
                 global.bTypeName='';
                 storage.load({
                     key:'loginInfo'
