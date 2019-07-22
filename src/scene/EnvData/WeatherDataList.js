@@ -56,7 +56,7 @@ export default class WeatherDataList extends Component {
                     }
                     return (
                         <View key={item.key} style={styles.listItem}>
-                            <Text>{item.name}:</Text>
+                            <Text>{item.name}:&nbsp;</Text>
                             <Text>{item.value}</Text>
                             <Text>{item.unitName}</Text>
                         </View>
@@ -72,7 +72,7 @@ export default class WeatherDataList extends Component {
         };
         let params = { "orgId": weatherStationOrgId };
         Network.get(api.WEATHERURL, params, headers, (res) => {
-            console.info(JSON.stringify(res))
+            // console.info(JSON.stringify(res))
             if (res.meta.success) {
                 this.setState({
                     weatherData:res.data
@@ -122,8 +122,8 @@ const styles = StyleSheet.create({
     },
     listItem:{
         flexDirection:'row',
-        width:'33%',
-        paddingHorizontal:15
+        paddingLeft:15,
+        paddingVertical:5
         
     }
 });
