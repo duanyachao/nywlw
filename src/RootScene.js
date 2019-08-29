@@ -217,7 +217,6 @@ const StackOptions = ({navigation}) => {
     let {state, goBack} = navigation;
     const headerStyle = {
         height: 45,
-        flexDirection: 'row',
         backgroundColor: '#fff',
         borderBottomWidth: screen.onePixel,
         borderBottomColor: '#ccc'

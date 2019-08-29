@@ -13,7 +13,6 @@ import {
     StyleSheet
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import IconFont from 'react-native-vector-icons/IconFont'
 import { screen, theme } from '../../common';
 import { rowStyle } from '../../common/theme';
 import { Header, Button } from '../../components';
@@ -131,7 +130,7 @@ class MineScene extends Component {
                     <TouchableOpacity onPress={() => /*this.props.navigation.navigate('Myprofit', { title: '我的收益' })*/{}}>
                         <View style={[rowStyle.myItem, rowStyle.noBorerBottom]}>
                             <View style={rowStyle.myItemLeft}>
-                                <IconFont style={rowStyle.tipIcon} name='shouyi' size={18} color={theme.theme}></IconFont>
+                                <Icon style={rowStyle.tipIcon} name='rmb' size={18} color={theme.theme}></Icon>
                                 <Text style={rowStyle.itemTip}>我的收益</Text>
                             </View>
                             <View style={rowStyle.myItemRight}>
