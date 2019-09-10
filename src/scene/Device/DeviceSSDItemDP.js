@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {
     Alert,
     Button,
+    Slider,
     StyleSheet,
     View,
     Text,
@@ -21,112 +22,43 @@ export default class DeviceSSDItemDP extends Component {
         this.state = {
             visible: false,
             deviceStatus: null,//上升-下降,展开-收起
-            opValue: null,//UP  DOWN  STOP
-            upActionName: null,
-            downActionName: null,
-            btnDsiabled:null
+            deviceStatusCode: null,//UP  DOWN  STOP
+            btnDsiabled:null,
+            actions:null
 
         }
     }
-    loadDevices(rowData){
-        // console.info(JSON.stringify(rowData))
-        let upActionName, downActionName, deviceStatus, opDeviceStatusName;
-        let actionArr=['UP','DOWN'];
-        if (rowData.D_T_CODE=='TC') {
-            upActionName='打开';
-            downActionName='关闭';
-            switch (rowData.VALUE) {
-                case 'UP':
-                    deviceStatus='打开';    
-                    break;
-                case 'DOWN':
-                    deviceStatus='关闭';    
-                    break;
-                case 'STOP':
-                    deviceStatus='停止';    
-                    break;
-                default:
-                    break;
+    getActionList = (rowData) => {
+        let headers = {
+            'X-Token': token
+        };
+        let params = { "deviceTypeId": rowData.DEVICE_TYPE_ID };
+        Network.get(api.HOST + api.GETACTIONS, params, headers, (res) => {
+            // console.info(res)
+            if (res.meta.success) {
+                this.setState({
+                    actions: res.data,
+                    deviceStatus:rowData.NAME,
+                    deviceStatusCode:rowData.VALUE
+                })
             }
-            
-        }else if(rowData.D_T_CODE=='ZYW'){
-            upActionName='展开';
-            downActionName='收起';
-            switch (rowData.VALUE) {
-                case 'UP':
-                    deviceStatus='展开';    
-                    break;
-                case 'DOWN':
-                    deviceStatus='收起';    
-                    break;
-                case 'STOP':
-                    deviceStatus='停止';    
-                    break;
-                default:
-                    break;
-            }
-        }else if(rowData.D_T_CODE=='JL'){
-            upActionName='卷起';
-            downActionName='放下';
-            switch (rowData.VALUE) {
-                case 'UP':
-                    deviceStatus='卷起';    
-                    break;
-                case 'DOWN':
-                    deviceStatus='放下';    
-                    break;
-                case 'STOP':
-                    deviceStatus='停止';    
-                    break;
-                default:
-                    break;
-            }
-        }
-        else {
-            
-        }
-        this.setState({
-            upActionName: upActionName,
-            downActionName: downActionName,
-            deviceStatus: deviceStatus,
-            opValue: rowData.VALUE
-
         })
     }
     componentDidMount() {
         const { rowData, rowID, orgId } = this.props;
-        this.loadDevices(rowData)    
+        this.getActionList(rowData)   
     }
     componentWillReceiveProps(nextProps) {
         if (nextProps.rowData !== this.props.rowData) {
             const { rowData, rowID, orgId } = nextProps;
-            this.loadDevices(rowData)
+            this.getActionList(rowData)
         }
         return true
     }
-    deviceOperate(value, rowData, orgId, token) {
-        let actionName;
-        switch (value) {
-            case 'UP':
-                actionName=this.state.upActionName;
-                break;
-            case 'DOWN':
-                actionName=this.state.downActionName;
-                break;
-            case 'STOP':
-                actionName='停止';
-                break;
-            default:
-                break;
-        }
-        if(rowData.VALUE !=='ERROR'){
-
-        }else{
-            return
-        }
+    deviceOperate(item, rowData, orgId, token) {
         Alert.alert(
             '提示',
-            '确定将'+rowData.DEVICE_NAME+actionName+'?',
+            '确定将'+rowData.DEVICE_NAME+item.name+'?',
             [
               {text: '确定', onPress: () =>{
                 this.setState({
@@ -136,14 +68,15 @@ export default class DeviceSSDItemDP extends Component {
                         'X-Token':token,
                         'Content-Type':'application/json'
                     };
-                    let params={"deviceId": rowData.DEVICE_ID,"regionId": orgId,"status": value};
+                    let params={"deviceId": rowData.DEVICE_ID,"regionId": orgId,"status": item.code};
                     Network.postJson(api.HOST+api.DEVICES_UPDATE,params, headers,(res)=>{
-                        console.info(res)
+                        // console.info(res)
                         if(res.meta.success){
                         this.setState({
-                            deviceStatus:actionName,
-                            opValue:value
+                            deviceStatus:item.name,
+                            deviceStatusCode:item.code
                         });
+                        toastShort('操作成功');
                     }else{
                         toastShort(res.meta.message);
                     }
@@ -158,51 +91,107 @@ export default class DeviceSSDItemDP extends Component {
             ]
           )
     }
+    deviceOperate2(value,rowData,orgId,token){
+        if(rowData.VALUE !=='ERROR'){
 
+        }else{
+            return
+        }
+        Alert.alert(
+            '提示',
+            '确定将'+rowData.DEVICE_NAME+'开启'+value+'%吗?',
+            [
+              {text: '确定', onPress: () =>{
+                this.setState({
+                    visible: !this.state.visible
+                })
+                    let headers={
+                        'X-Token':token,
+                        'Content-Type':'application/json'
+                    };
+                    let params={"deviceId": rowData.DEVICE_ID,"regionId": orgId,"status": value};
+                    Network.postJson(api.HOST+api.DEVICES_UPDATE,params, headers,(res)=>{
+                        if(res.meta.success){
+                        this.setState({
+                            deviceStatusCode:value,
+                            deviceStatus:value+'%'
+                        });
+                    }else{
+                        toastShort(res.meta.message);
+                    }
+                    this.setState({
+                        visible: !this.state.visible
+                    })
+                })
+              }},
+             {text:'取消',onPress:()=>{
+                this.setState({
+                    deviceStatusCode:rowData.VALUE    
+                });
+             }} 
+            ]
+          )
+        }
     render() {
         const { rowData, rowID, orgId } = this.props;
-        return (
-            <View key={rowID} style={styles.itemStyle}>
+        const {actions,deviceStatusCode,deviceStatus}=this.state;
+        let renderView;
+        if (actions && actions.length>50) {
+            renderView= (
+                <View key={rowID} style={styles.itemStyle}>
                 <Spinner visible={this.state.visible} textContent={"操作中..."} textStyle={{ color: '#FFF', fontSize: 16 }}></Spinner>
                 <View style={styles.itemTopStyle}>
                     <Text style={styles.deviceName}>{rowData.DEVICE_NAME}</Text>
-                    <Text style={styles.deviceStatus}>当前状态:{this.state.deviceStatus}</Text>
+                    <Text style={styles.deviceStatus}>当前状态:{deviceStatus}</Text>
                 </View>
-                <View style={styles.itemBotStyle}>
-                    <TouchableOpacity
-                        // disabled={(this.state.opValue=='UP')?true:false} 
-                        onPress={()=>{this.deviceOperate('UP',rowData,orgId,token)}}>
-                        <View style={[styles.btnWrapper, styles.btnOne]}>
-                            <Text style={styles.actionText}>
-                                {this.state.upActionName}
-                            </Text>
-
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        // disabled={(this.state.opValue=='DOWN')?true:false} 
-                        onPress={()=>{this.deviceOperate('DOWN',rowData,orgId,token)}}
-                    >
-                        <View style={[styles.btnWrapper, styles.btnOne]}>
-                            <Text style={styles.actionText}>
-                                {this.state.downActionName}
-                            </Text>
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={()=>{this.deviceOperate('STOP',rowData,orgId,token)}}
-                    >
-                        <View style={[styles.btnWrapper, styles.btnTwo]}>
-                            <Text style={styles.actionText}>
-                                停止
-                            </Text>
-                        </View>
-                    </TouchableOpacity>
-                    
+                <View style={styles.sliderWrapper}>
+                    <Slider style={styles.slider}
+                        ref='slider'
+                        maximumValue={100}
+                        minimumValue={0}
+                        maximumTrackTintColor={'#23c884'}
+                        step={1}
+                        value={parseInt(deviceStatusCode)}
+                        onValueChange={(value)=>this.setState({deviceStatusCode:value})}
+                        onSlidingComplete={(value) => this.deviceOperate2(value,rowData,orgId,token)}
+                    ></Slider>
                 </View>
 
             </View>
+        
+            )    
+        } else if(actions && 0<actions.length<50) {
+            renderView= (
+                <View key={rowID} style={styles.itemStyle}>
+                    <Spinner visible={this.state.visible} textContent={"操作中..."} textStyle={{ color: '#FFF', fontSize: 16 }}></Spinner>
+                    <View style={styles.itemTopStyle}>
+                        <Text style={styles.deviceName}>{rowData.DEVICE_NAME}</Text>
+                        <Text style={styles.deviceStatus}>当前状态:{deviceStatus}</Text>
+                    </View>
+                    <View style={styles.itemBotStyle}>
+                    {actions.map((item,index)=>{
+                        let disabled=(item.code==deviceStatusCode)?true:false;
+                        return(
+                            <TouchableOpacity key={index} disabled={disabled}
+                            onPress={()=>{this.deviceOperate(item,rowData,orgId,token)}}>
+                            <View style={[styles.btnWrapper, (disabled)?styles.btnTwo:styles.btnOne]}>
+                                <Text style={styles.actionText}>
+                                    {item.name}
+                                </Text>
+    
+                            </View>
+                        </TouchableOpacity>
+                        )
+                    })}
+                    </View>
+                    
+                </View>
+            )    
+        }
+        return (
+            <View>{renderView}</View>
         )
+        
     }
 }
 const styles = StyleSheet.create({

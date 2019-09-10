@@ -46,7 +46,7 @@ export default class Devices extends Component {
     }
     renderTabIndicator() {
         let tabs = [
-            { text: '开关设备' }, { text: '开关停设备' }
+            { text: '开关类设备' }, { text: '行程类设备' }
         ];
         return (
             <PagerTabIndicator

@@ -11,6 +11,7 @@ import{
 import api from '../../api';
 import { Network, toastShort } from '../../utils';
 import{DeviceIcon} from '../../common/Normal';
+import Spinner from 'react-native-loading-spinner-overlay';
 const styles=StyleSheet.create({
     itemStyle:{
         height:46,
@@ -48,6 +49,7 @@ export default class DeviceItem extends Component{
     constructor(props){
         super(props);
         this.state={
+            visible: false,
             SwitchIsOn:false,
             statusText:null  
         }
@@ -109,6 +111,9 @@ export default class DeviceItem extends Component{
             '确定将'+rowData.DEVICE_NAME+statusText+'?',
             [
               {text: '确定', onPress: () =>{
+                this.setState({
+                    visible: !this.state.visible
+                })
                     let headers={
                         'X-Token':token,
                         'Content-Type':'application/json'
@@ -122,9 +127,13 @@ export default class DeviceItem extends Component{
                             SwitchIsOn:!this.state.SwitchIsOn,
                             statusText:statusText
                         });
+                        toastShort('操作成功');
                     }else{
                         toastShort(res.meta.message);
                     }
+                    this.setState({
+                        visible: !this.state.visible
+                    });
                 })
               }},
              {text:'取消',onPress:()=>{
@@ -186,6 +195,7 @@ export default class DeviceItem extends Component{
         return(
             <TouchableHighlight underlayColor="rgb(255, 255,255)" onPress={() =>this.deviceOperate(rowData,this.state.SwitchIsOn,orgId,token)}>
             <View key={rowID} style={styles.itemStyle}>
+                <Spinner visible={this.state.visible} textContent={"操作中..."} textStyle={{ color: '#FFF', fontSize: 16 }}></Spinner>
                 <View style={styles.deviceName}>
                      <Image source={this.state.SwitchIsOn?onIcon:offIcon} style={styles.deviceIcon}></Image>
                     <Text style={styles.deviceNameText}>{rowData.DEVICE_NAME}</Text>    

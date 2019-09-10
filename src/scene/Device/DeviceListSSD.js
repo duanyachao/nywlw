@@ -21,11 +21,12 @@ export default class DeviceListSSD extends Component {
     }
     renderItem(rowData, sectionID, rowID) {
         let {orgId}=this.props;
-        if (this.state.bTypeName=='温室大棚') {
-            return <DeviceSSDItemDP rowData={rowData} rowID={rowID} orgId={orgId}></DeviceSSDItemDP>        
-            } else {
-                return <DeviceSSDItem rowData={rowData} rowID={rowID} orgId={orgId}></DeviceSSDItem>    
-            }
+        return (<DeviceSSDItemDP rowData={rowData} rowID={rowID} orgId={orgId}></DeviceSSDItemDP>)
+        // if (this.state.bTypeName=='温室大棚') {
+        //     return <DeviceSSDItemDP rowData={rowData} rowID={rowID} orgId={orgId}></DeviceSSDItemDP>        
+        //     } else {
+        //         return <DeviceSSDItem rowData={rowData} rowID={rowID} orgId={orgId}></DeviceSSDItem>    
+        //     }
         
     }
     componentDidMount(){
