@@ -154,7 +154,7 @@ export default class RootScene extends Component {
 }
 
 const TabScene = TabNavigator({
-    Warn: {
+    Env: {
         screen: EnvDataScene,
         navigationOptions: ({navigation}) => TabOptions('报警', navigation, 'warning', true, '报警信息')
     },
@@ -180,12 +180,12 @@ const TabScene = TabNavigator({
     }
 },
     {
-        initialRouteName: 'Warn',
+        initialRouteName: 'Env',
         backBehavior: "none",
         tabBarComponent: TabBarBottom,
         tabBarPosition: 'bottom',
         swipeEnabled: true,
-        lazy: true,
+        // lazy: false,
         // order: ["Home", "Nearby", "Order", "Mine"],
         animationEnabled: true,
         tabBarOptions: {

@@ -4,29 +4,48 @@ import {
     StyleSheet,
     View,
     Text,
-    ListView
+    ListView,
+    FlatList,
+    RefreshControl
 } from 'react-native';
 import DeviceSSDItem from './DeviceSSDItem';
 import DeviceSSDItemDP from './DeviceSSDItemDP';
+import { theme,screen } from '../../common'
+import {Button} from './../../components'
+import { Network, toastShort } from './../../utils'
+import api from './../../api'
 // create a component
 export default class DeviceListSSD extends Component {
     constructor(props){
         super(props);
         this.state = {
             bTypeName:null,
-            dataSource: new ListView.DataSource({
-                rowHasChanged: (row1, row2) => row1 !== row2,
-            })
+            devicesSetDatasList:null,
+            showSetting:false
         }
     }
-    renderItem(rowData, sectionID, rowID) {
+    sendDevicesSetDatas=(orgId)=>{
+        let headers = {
+            'X-Token': token
+        };
+        let params = { "orgId": orgId };
+        Network.get(api.HOST + api.SENDDEVICESET, params, headers, (res) => {
+            // console.info(res)
+            if(res.meta.success){
+                toastShort('下发信息成功')        
+            }else{
+                toastShort(res.meta.message)     
+            }
+        })
+    }
+    keyExtractor = (item, index) =>index;
+    renderItem(item) {
         let {orgId}=this.props;
-        return (<DeviceSSDItemDP rowData={rowData} rowID={rowID} orgId={orgId}></DeviceSSDItemDP>)
-        // if (this.state.bTypeName=='温室大棚') {
-        //     return <DeviceSSDItemDP rowData={rowData} rowID={rowID} orgId={orgId}></DeviceSSDItemDP>        
-        //     } else {
-        //         return <DeviceSSDItem rowData={rowData} rowID={rowID} orgId={orgId}></DeviceSSDItem>    
-        //     }
+        return (
+            <DeviceSSDItemDP
+                rowData={item.item} 
+                rowID={item.item.DEVICE_ID} 
+                orgId={orgId} showSetting={this.state.showSetting} callback={()=>this.getDevicesSetDatas(this.state.devicesSetDatasList)}></DeviceSSDItemDP>)
         
     }
     componentDidMount(){
@@ -40,7 +59,7 @@ export default class DeviceListSSD extends Component {
         .catch(err => {
             // 如果没有找到数据且没有sync方法，
             // 或者有其他异常，则在catch中返回
-            console.warn(err.message);
+            // console.warn(err.message);
             switch (err.name) {
               case 'NotFoundError':
                 // TODO;
@@ -51,17 +70,37 @@ export default class DeviceListSSD extends Component {
             }
           })    
     }
+    /*
+    定义列表头部
+    */
+    // headerComponent=()=>{
+    //     return(
+    //         )
+    // }
     render() {
-        const {devices}=this.props;
+        const {devices,orgId,onfreash}=this.props;
+        const itemH = 100;
         return (
-            <ListView
-                initialListSize={1}
-                dataSource={this.state.dataSource.cloneWithRows(devices)}
-                renderRow={(rowData,sectionID,rowID)=>this.renderItem(rowData,sectionID,rowID)}
-                style={styles.listViewStyle}
-                onEndReachedThreshold={10}
-                enableEmptySections={true}
-            ></ListView>
+            <View style={styles.container}>
+                <View style={styles.setBtnsStyle}>
+                    <Button 
+                        btnStyle={[styles.deviceSetBtnStyle]}
+                        btnTextStyle={styles.deviceSetBtnTxtStyle} 
+                        title='下发设置' 
+                        onPress={()=> this.sendDevicesSetDatas(orgId)} />
+                </View>
+                <FlatList
+                    data={devices}
+                    getItemLayout={(item, index) => ({ length: itemH, offset: itemH * index, index })}
+                    initialNumToRender={30}
+                    keyExtractor={this.keyExtractor}
+                    onEndReached={this.onEndReached}
+                    onEndReachedThreshold={1}
+                    onRefresh={(orgId)=>{onfreash(orgId)}}
+                    refreshing={false}
+                    ref="DevicesList"
+                    renderItem={(item) => this.renderItem(item)}/>
+            </View>
         );
     }
 }
@@ -70,8 +109,23 @@ export default class DeviceListSSD extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+    },
+    setBtnsStyle:{
+        flexDirection:'row',
+        justifyContent:'flex-end',
+        marginVertical:5,
+        marginRight:10
+    },
+    deviceSetBtnStyle:{
+        alignItems:'center',
         justifyContent: 'center',
-        alignItems: 'center',
-
+        padding:10,
+        marginHorizontal:10,
+        backgroundColor:theme.theme,
+        borderRadius:5  
+    },
+    deviceSetBtnTxtStyle:{
+        color:'#ffffff',
+        fontSize:16    
     },
 });

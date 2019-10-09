@@ -59,7 +59,7 @@ export default class ProductScene extends Component {
         };
         let params = { "biologyInId": biologyInId, "dayAge": dayAge };
         Network.postJson(api.HOST + api.DAYINFO, params, headers, (res) => {
-            console.info(res)
+            // console.info(res)
             if (res.meta.success && res.data.length>0) {
                 let result=res.data;
                 let len=result.length;

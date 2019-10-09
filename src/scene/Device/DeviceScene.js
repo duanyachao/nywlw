@@ -20,22 +20,23 @@ export default class Devices extends Component {
             devices:null
         }
     }
-    requestDevicesList() {
+    requestDevicesList(orgId) {
+        let headers = {
+            'X-Token': token
+        };
+        let params = { "orgId": orgId };
+        Network.get(api.HOST + api.DEVICES_STATUS, params, headers, (res) => {
+            // console.info(res)
+            if(res.meta.success){
+                this.setState({
+                    devices:res.data
+                })
+            }
+        })
     }
     shouldComponentUpdate(nextProps, nextState) {
         if (nextState.orgId !== this.state.orgId) {
-            let headers = {
-                'X-Token': token
-            };
-            let params = { "orgId": nextState.orgId };
-            Network.get(api.HOST + api.DEVICES_STATUS, params, headers, (res) => {
-                // console.info(res)
-                if(res.meta.success){
-                    this.setState({
-                        devices:res.data
-                    })
-                }
-            })
+            this.requestDevicesList(nextState.orgId)    
         }
         return true;
     }
@@ -69,8 +70,8 @@ export default class Devices extends Component {
                     indicator={this.renderTabIndicator()}
                     scrollEnabled={true}
                     initialPage={0}>
-                    {(devices && devices.sd.length>0)?<View><DeviceListSD orgId={this.state.orgId} devices={devices.sd}></DeviceListSD></View>:<View style={theme.nodata}><Text>暂无设备</Text></View>}
-                    {(devices && devices.ssd.length>0)?<View><DeviceListSSD orgId={this.state.orgId} devices={devices.ssd}></DeviceListSSD></View>:<View style={theme.nodata}><Text>暂无设备</Text></View>}
+                    {(devices && devices.sd.length>0)?<View><DeviceListSD orgId={this.state.orgId} devices={devices.sd} onfreash={(orgId)=>this.requestDevicesList(this.state.orgId)}></DeviceListSD></View>:<View style={theme.nodata}><Text>暂无设备</Text></View>}
+                    {(devices && devices.ssd.length>0)?<View><DeviceListSSD orgId={this.state.orgId} devices={devices.ssd} onfreash={(orgId)=>this.requestDevicesList(this.state.orgId)}></DeviceListSSD></View>:<View style={theme.nodata}><Text>暂无设备</Text></View>}
                 
                 </IndicatorViewPager>
             </View>

@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import {
     Alert,
-    Button,
     Slider,
     StyleSheet,
     View,
     Text,
+    TextInput,
     Image,
     TouchableHighlight,
     TouchableOpacity
@@ -16,10 +16,13 @@ import { DeviceIcon } from '../../common/Normal';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { theme,screen } from '../../common';
 import Spinner from 'react-native-loading-spinner-overlay';
+import {Button} from './../../components';
+import DeviceSetComponent from './../../components/settings/devicesSet/DeviceSetComponent'
 export default class DeviceSSDItemDP extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            showSetting:false,
             visible: false,
             deviceStatus: null,//上升-下降,展开-收起
             deviceStatusCode: null,//UP  DOWN  STOP
@@ -52,6 +55,9 @@ export default class DeviceSSDItemDP extends Component {
         if (nextProps.rowData !== this.props.rowData) {
             const { rowData, rowID, orgId } = nextProps;
             this.getActionList(rowData)
+            this.setState({
+                showSetting:false
+            })
         }
         return true
     }
@@ -131,20 +137,14 @@ export default class DeviceSSDItemDP extends Component {
              }} 
             ]
           )
-        }
+    }
+    
     render() {
-        const { rowData, rowID, orgId } = this.props;
-        const {actions,deviceStatusCode,deviceStatus}=this.state;
+        const { rowData, rowID, orgId,callback } = this.props;
+        const {actions,deviceStatusCode,deviceStatus,showSetting}=this.state;
         let renderView;
         if (actions && actions.length>50) {
-            renderView= (
-                <View key={rowID} style={styles.itemStyle}>
-                <Spinner visible={this.state.visible} textContent={"操作中..."} textStyle={{ color: '#FFF', fontSize: 16 }}></Spinner>
-                <View style={styles.itemTopStyle}>
-                    <Text style={styles.deviceName}>{rowData.DEVICE_NAME}</Text>
-                    <Text style={styles.deviceStatus}>当前状态:{deviceStatus}</Text>
-                </View>
-                <View style={styles.sliderWrapper}>
+            renderView=(
                     <Slider style={styles.slider}
                         ref='slider'
                         maximumValue={100}
@@ -153,23 +153,12 @@ export default class DeviceSSDItemDP extends Component {
                         step={1}
                         value={parseInt(deviceStatusCode)}
                         onValueChange={(value)=>this.setState({deviceStatusCode:value})}
-                        onSlidingComplete={(value) => this.deviceOperate2(value,rowData,orgId,token)}
-                    ></Slider>
-                </View>
-
-            </View>
-        
-            )    
-        } else if(actions && 0<actions.length<50) {
-            renderView= (
-                <View key={rowID} style={styles.itemStyle}>
-                    <Spinner visible={this.state.visible} textContent={"操作中..."} textStyle={{ color: '#FFF', fontSize: 16 }}></Spinner>
-                    <View style={styles.itemTopStyle}>
-                        <Text style={styles.deviceName}>{rowData.DEVICE_NAME}</Text>
-                        <Text style={styles.deviceStatus}>当前状态:{deviceStatus}</Text>
-                    </View>
-                    <View style={styles.itemBotStyle}>
-                    {actions.map((item,index)=>{
+                        onSlidingComplete={(value) => this.deviceOperate2(value,rowData,orgId,token)}/>
+                    )    
+            }else if(actions && 0<actions.length<50){
+                renderView= (
+                    <View style={styles.itemBotLeftStyle}>
+                        {actions.map((item,index)=>{
                         let disabled=(item.code==deviceStatusCode)?true:false;
                         return(
                             <TouchableOpacity key={index} disabled={disabled}
@@ -178,43 +167,64 @@ export default class DeviceSSDItemDP extends Component {
                                 <Text style={styles.actionText}>
                                     {item.name}
                                 </Text>
-    
                             </View>
                         </TouchableOpacity>
                         )
                     })}
-                    </View>
-                    
+                    </View>)
+            }
+        return(
+            
+            <View key={rowID} style={styles.itemStyle}>
+                <Spinner visible={this.state.visible} textContent={"操作中..."} textStyle={{ color: '#FFF', fontSize: 16 }}></Spinner>
+                <View style={styles.itemTopStyle}>
+                    <Text style={styles.deviceName}>{rowData.DEVICE_NAME}</Text>
+                    <Text style={styles.deviceStatus}>当前状态:{deviceStatus}</Text>
                 </View>
-            )    
-        }
-        return (
-            <View>{renderView}</View>
+                <View style={styles.itemBotStyle}>
+                    {renderView}
+                    <View style={styles.itemBotRightStyle}>
+                        <Button
+                            btnStyle={[styles.deviceSetBtnStyle]}
+                            btnTextStyle={styles.deviceSetBtnTxtStyle}
+                            title='设置'
+                            onPress={() => this.setState({ showSetting: !this.state.showSetting })} />
+                    </View>
+                </View>
+                {(!showSetting) ? null : <DeviceSetComponent deviceData={rowData} orgId={orgId} />}
+            </View>
         )
-        
     }
 }
 const styles = StyleSheet.create({
     itemStyle: {
-        padding: 10,
+        paddingVertical: 10,
         borderBottomColor: '#dcdcdc',
         borderBottomWidth: 4,
         backgroundColor: '#fff'
     },
     itemTopStyle: {
+        paddingHorizontal: 10,
         flex: 1,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center',
         marginBottom: 10
     },
     itemBotStyle: {
+        paddingHorizontal: 10,
         flex: 1,
         flexDirection: 'row',
-        // justifyContent: 'space-between',
+    },
+    itemBotLeftStyle:{
+        flex: 1,
+        flexDirection: 'row',
+    },
+    itemBotRightStyle:{
+        justifyContent:'center',    
     },
     btnWrapper: {
-        marginLeft:30,
+        marginLeft:15,
+        backgroundColor:'red',
         justifyContent:'center',
         alignItems:'center',
         borderRadius: 50,
@@ -222,7 +232,6 @@ const styles = StyleSheet.create({
         height: 50
     },
     btnOne: {
-        // backgroundColor: 'rgba(92, 205, 91, 0.91)',
         backgroundColor:theme.theme        
     },
     btnTwo: {
@@ -241,10 +250,20 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#05b8a5'
     },
-    sliderWrapper: {
-        marginTop: 10
-    },
     slider: {
-
+        flex:1,
+        marginRight:20
+    },
+    deviceSetBtnStyle:{
+        // alignItems:'center',
+        // justifyContent: 'center',
+        padding:10,
+        marginRight:10,
+        backgroundColor:theme.theme,
+        borderRadius:5  
+    },
+    deviceSetBtnTxtStyle:{
+        color:'#ffffff',
+        fontSize:16    
     },
 })

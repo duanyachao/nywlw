@@ -30,6 +30,7 @@ class VideoScene extends Component {
         };
         let params = { "orgId": orgId };
         Network.get(api.HOST + api.VIDEOLISTS, params, headers, (res) => {
+            // console.info(res)
             if (res.meta.success) {
                 this.setState({
                     videoLists: res.data

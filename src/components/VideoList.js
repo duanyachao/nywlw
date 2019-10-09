@@ -33,7 +33,7 @@ export default class VideoList extends Component {
     selectVideo(videoList) {
         let videoLists = [];
         for (var index = 0; index < videoList.length; index++) {
-            videoLists.push(videoList[index].vcameraName)
+            videoLists.push(videoList[index].vCameraName)
 
         }
         Picker.init({
@@ -44,9 +44,9 @@ export default class VideoList extends Component {
             selectedValue: [this.state.vcameraName],
             onPickerConfirm: data => {
                 videoList.forEach((element, index) => {
-                    if (element.vcameraName == data[0]) {
+                    if (element.vCameraName == data[0]) {
                         this.setState({
-                            vcameraName: element.vcameraName,
+                            vcameraName: element.vCameraName,
                             forwordUrl: element.forwordUrl
                         })
                     }
@@ -62,7 +62,7 @@ export default class VideoList extends Component {
         let videoList = nextProps.videoList;
         if (videoList && videoList.length>0) {
             this.setState({
-                vcameraName: videoList[0].vcameraName,
+                vcameraName: videoList[0].vCameraName,
                 forwordUrl: videoList[0].forwordUrl
             })
         }
@@ -70,6 +70,7 @@ export default class VideoList extends Component {
         return true
     }
     render() {
+        // console.info(this.props.videoList);
         return (
             <View style={styles.container}>
                 <View style={pickerStyle.container}>

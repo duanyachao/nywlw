@@ -7,13 +7,14 @@ import {
     Text,
     StyleSheet
 } from 'react-native';
+import { PagerTabIndicator, IndicatorViewPager } from 'rn-viewpager';
 import { Area, Header } from '../../components';
 import { theme, screen } from '../../common';
 import { Network, toastShort } from '../../utils';
 import api from '../../api';
 import EnvDataInfoList from './EnvDataInfoList';
 import WeatherDataList from './WeatherDataList';
-export default class WarnScene extends Component {
+export default class EnvDataScene extends Component {
     static navigationOptions = {
         header: <Header title='报警信息'></Header>
     }
@@ -56,6 +57,7 @@ export default class WarnScene extends Component {
         // }
         // let envData = objToStrMap(res.data.edMap);   
         Network.postJson(evndataUrl, params, headers, (res) => {
+            // console.info(res)
             if (res.meta.success && Object.keys(res.data.edMap).length !== 0) {
                 //对象转数组
                 let arr = [];
@@ -144,6 +146,24 @@ export default class WarnScene extends Component {
     componentWillUnmount() {
         this.warnListener && this.warnListener.remove();
     }
+    /*
+    环境数据界面新增生产区域和室外数据
+    */
+   renderTabIndicator() {
+    let tabs = [
+        { text: '室外气象' }, { text: '生产区域' }
+    ];
+    return (
+        <PagerTabIndicator
+            style={styles.indicatorContainer}
+            textStyle={styles.tabTxt}
+            selectedTextStyle={styles.selectedTabTxt}
+            itemStyle={styles.tabItem}
+            selectedItemStyle={styles.selectedTabItem}
+            tabs={tabs}>
+        </PagerTabIndicator>
+    )
+}
     render() {
         return (
             <View style={styles.container}>
@@ -152,6 +172,23 @@ export default class WarnScene extends Component {
                 
                 {this.state.envDataList ? this.renderEnvDataInfoList(this.state.envDataList) : <View style={styles.noWarnWrapper}><Text>暂无数据</Text></View>}
             </View>
+
+            // <View style={styles.container}>
+                
+            //     <IndicatorViewPager
+            //         style={{ flex: 1, flexDirection: 'column-reverse' }}
+            //         indicator={this.renderTabIndicator()}
+            //         scrollEnabled={true}
+            //         initialPage={0}>
+            //         <View>
+            //         <WeatherDataList/>
+            //         </View>
+            //         <View>
+            //             <Area callbackParent={(orgId, terminalId, terminalSerialNum) => this.areaChange(orgId, terminalId, terminalSerialNum)}></Area>
+            //             {this.state.envDataList ? this.renderEnvDataInfoList(this.state.envDataList) : <View style={styles.noWarnWrapper}><Text>暂无数据</Text></View>}
+            //         </View>
+            //     </IndicatorViewPager>
+            // </View>
         );
     }
 }
@@ -159,9 +196,39 @@ export default class WarnScene extends Component {
 // define your styles
 const styles = StyleSheet.create({
     container: {
-        display: 'flex',
-        flex: 1,
-        backgroundColor: '#eee',
+        flex: 1
+    },
+    indicatorContainer: {
+        backgroundColor: '#fff',
+        borderBottomWidth: 5,
+        borderBottomColor: '#f0f0f0',
+        borderTopWidth: 0,
+        paddingTop: 0,
+        paddingBottom: 0,
+        justifyContent: 'center',
+        alignItems: 'flex-end'
+    },
+    tabTxt: {
+        marginTop: 0,
+        color: '#222',
+        fontSize: 13,
+        paddingBottom: 12,
+    },
+    selectedTabTxt: {
+        marginTop: 0,
+        color:theme.theme,
+        fontSize: 13,
+        paddingLeft: 6,
+        paddingRight: 6,
+        paddingBottom: 10,
+        borderBottomWidth: 2,
+        borderBottomColor:theme.theme
+    },
+    tabItem: {
+        paddingTop: 20,
+        marginTop: 0
+    },
+    selectedTabItem: {
 
     },
     noWarnWrapper: {
