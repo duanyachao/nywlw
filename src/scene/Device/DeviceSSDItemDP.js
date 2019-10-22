@@ -34,7 +34,7 @@ export default class DeviceSSDItemDP extends Component {
     getActionList = (rowData) => {
         let headers = {
             'X-Token': token
-        };
+        }; 
         let params = { "deviceTypeId": rowData.DEVICE_TYPE_ID };
         Network.get(api.HOST + api.GETACTIONS, params, headers, (res) => {
             // console.info(res)

@@ -120,8 +120,8 @@ export default class DeviceItem extends Component{
                     };
                     let params={"deviceId": rowData.DEVICE_ID,"regionId": orgId,"status": action};
                     Network.postJson(api.HOST+api.DEVICES_UPDATE,params, headers,(res)=>{
-                        console.info(action)
-                        console.info(res)
+                        // console.info(action)
+                        // console.info(res)
                         if(res.meta.success){
                         this.setState({
                             SwitchIsOn:!this.state.SwitchIsOn,

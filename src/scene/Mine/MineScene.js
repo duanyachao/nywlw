@@ -175,16 +175,20 @@ class MineScene extends Component {
                             </View>
                         </View>
                     </TouchableOpacity>
+                    <TouchableOpacity onPress={() => this.props.navigation.navigate('DevicesConfg', { title: '我的设置' })}>
                     <View style={[rowStyle.myItem, rowStyle.noBorerBottom]}>
+                    
                         <View style={rowStyle.myItemLeft}>
                             <Icon style={rowStyle.tipIcon} name='cog' size={18} color={theme.theme}></Icon>
-                            <Text style={rowStyle.itemTip}>系统设置</Text>
+                            <Text style={rowStyle.itemTip}>我的设置</Text>
                         </View>
                         <View style={rowStyle.myItemRight}>
                             <Text style={rowStyle.itemTip}></Text>
                             <Icon style={rowStyle.arrowIcon} name='angle-right' size={18} color="#ccc"></Icon>
                         </View>
+                    
                     </View>
+                    </TouchableOpacity>
                 </View>
                 <View style={styles.btnWrapper}>
                     <Button

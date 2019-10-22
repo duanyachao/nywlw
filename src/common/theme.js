@@ -1,12 +1,24 @@
 import {StyleSheet} from 'react-native';
 import screen from './screen'
 export default {
+    colorG:'#bebebe',
+    colorLG:'#D3D3D3',
+    bgGray1:'#f5f5f5',
+    bgGray2:'#dcdcdc',
+    colorFirebrick:'#B22222',
+    colorTurquoise:'#40E0D0',
     theme: '#06C1AE',
     border: '#e0e0e0',
     background: '#f3f3f3',
     tabIconsize:24,
     tabFontSize:12,
     iconColor:'rgb(55,179,117)',
+    rpos:{
+        position:'relative',
+    },
+    noBorerBottom: {
+        borderBottomWidth: 0
+    },
     nodata: {
         display: 'flex',
         flex: 1,

@@ -23,7 +23,7 @@ import DeviceScene from './scene/Device/DeviceScene';
 import EnvDataScene from './scene/EnvData/EnvDataScene';
 import MineScene from './scene/Mine/MineScene';
 import UserInfoScene from './scene/Mine/UserInfoScene'
-import MyprofitScene from './scene/Mine/MyprofitScene'
+import DevicesConfScene from './scene/Mine/devicesConf/DevicesConfScene'
 import MsgScene from './scene/Mine/MsgScene'
 import ModifyPasswordScene from './scene/Mine/ModifyPasswordScene'
 import VideoScene from './scene/Video/VideoScene'
@@ -210,7 +210,7 @@ const TabOptions = (tabBarTitle, navigation, iconName, isheader, navTitle) => {
         )
     });
     const headerTitle = navTitle;
-    const header = (isheader) ? <Header title={headerTitle} navigation={navigation}></Header> : null
+    const header = (isheader) ? <Header title={headerTitle}  navigation={navigation} leftBtn={false} rightBtn={false}></Header> : null
     return { tabBarLabel, tabBarIcon, header, headerTitle };
 };
 const StackOptions = ({navigation}) => {
@@ -253,9 +253,11 @@ const Navigator = StackNavigator({
         screen: ModifyPasswordScene,
         navigationOptions: ({navigation}) => StackOptions({ navigation })
     },
-    Myprofit: {
-        screen: MyprofitScene,
-        navigationOptions: ({navigation}) => StackOptions({ navigation })
+    DevicesConfg: {
+        screen: DevicesConfScene,
+        navigationOptions: ({navigation}) => ({
+            header: null
+        })
     },
     Msg: {
         screen: MsgScene,

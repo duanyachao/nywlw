@@ -15,9 +15,6 @@ import api from '../../api';
 import EnvDataInfoList from './EnvDataInfoList';
 import WeatherDataList from './WeatherDataList';
 export default class EnvDataScene extends Component {
-    static navigationOptions = {
-        header: <Header title='报警信息'></Header>
-    }
     constructor(props) {
         super(props);
         this.state = {

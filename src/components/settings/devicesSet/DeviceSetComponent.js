@@ -3,7 +3,6 @@ import { Text,TextInput, View,StyleSheet ,propTypes,ScrollView  } from 'react-na
 // import PropTypes from 'prop-types'
 import { theme,screen } from './../../../common'
 import { Network, toastShort} from './../../../utils'
-import { setSpText,scaleSizeH,scaleSizeW } from './../../../utils/ScreenSet'
 import {Button} from './../../../components'
 import api from './../../../api'
 export default class DeviceSetComponent extends Component {
