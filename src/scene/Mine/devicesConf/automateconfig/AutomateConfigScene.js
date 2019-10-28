@@ -12,6 +12,7 @@ export default class AutomateConfigScene extends Component {
         this.state={
             orgId:null,
             autoConfigDataList:null,
+            limitConfigList:null,
             devices:null,
             sensors:null,
             ECLs:null,
@@ -32,8 +33,16 @@ export default class AutomateConfigScene extends Component {
         Network.get(api.HOST + api.GETCONFIGLIST, params, headers, (res) => {
             // console.info(res)
             if (res.meta.success) {
+                let limitConfigDatas=new Array();
+                res.data.forEach((data)=>{
+                    if (data.sensorId) {
+                        limitConfigDatas.push(data)        
+                    }
+                })
                 this.setState({
-                    autoConfigDataList: res.data
+                    autoConfigDataList: res.data,
+                    limitConfigList:limitConfigDatas
+                    
                 })
             }
         })
@@ -275,7 +284,7 @@ export default class AutomateConfigScene extends Component {
                 title='下发设置' 
                 onPress={()=> this.sendConfigData(this.state.orgId)} />
             <FlatList
-                data={this.state.autoConfigDataList}
+                data={this.state.limitConfigList}
                 keyExtractor={this.keyExtractor}
                 ref="autoConfigDataList"
                 onRefresh={()=>{this.getConfigList(this.state.orgId)}}
@@ -297,7 +306,7 @@ export default class AutomateConfigScene extends Component {
         this.getECLs()
     }
     render() {
-        const {autoConfigDataList,orgId}=this.state;
+        const {autoConfigDataList,limitConfigList,orgId}=this.state;
         return (
             <View style={styles.container}>
                 {(autoConfigDataList && autoConfigDataList.length>0)?

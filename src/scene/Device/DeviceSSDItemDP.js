@@ -12,12 +12,8 @@ import {
 } from 'react-native';
 import api from '../../api';
 import { Network, toastShort } from '../../utils';
-import { DeviceIcon } from '../../common/Normal';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import { theme,screen } from '../../common';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {Button} from './../../components';
-import DeviceSetComponent from './../../components/settings/devicesSet/DeviceSetComponent'
 export default class DeviceSSDItemDP extends Component {
     constructor(props) {
         super(props);
@@ -184,14 +180,8 @@ export default class DeviceSSDItemDP extends Component {
                 <View style={styles.itemBotStyle}>
                     {renderView}
                     <View style={styles.itemBotRightStyle}>
-                        <Button
-                            btnStyle={[styles.deviceSetBtnStyle]}
-                            btnTextStyle={styles.deviceSetBtnTxtStyle}
-                            title='设置'
-                            onPress={() => this.setState({ showSetting: !this.state.showSetting })} />
                     </View>
                 </View>
-                {(!showSetting) ? null : <DeviceSetComponent deviceData={rowData} orgId={orgId} />}
             </View>
         )
     }
@@ -253,17 +243,5 @@ const styles = StyleSheet.create({
     slider: {
         flex:1,
         marginRight:20
-    },
-    deviceSetBtnStyle:{
-        // alignItems:'center',
-        // justifyContent: 'center',
-        padding:10,
-        marginRight:10,
-        backgroundColor:theme.theme,
-        borderRadius:5  
-    },
-    deviceSetBtnTxtStyle:{
-        color:'#ffffff',
-        fontSize:16    
-    },
+    }
 })

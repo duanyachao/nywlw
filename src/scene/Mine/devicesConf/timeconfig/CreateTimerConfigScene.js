@@ -3,6 +3,7 @@ import {
     Text,
     TextInput,
     View,
+    Switch,
     StyleSheet,
     TouchableOpacity,
     TouchableHighlight,
@@ -11,33 +12,30 @@ import {
     Picker
 } from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import { screen, theme } from './../../../../common'
-import { Network, toastShort } from './../../../../utils'
-import api from './../../../../api'
-import { Button } from './../../../../components'
-export default class CreateAutomateconfig extends Component {
+import { screen, theme } from '../../../../common'
+import { Network, toastShort } from '../../../../utils'
+import api from '../../../../api'
+import { Button } from '../../../../components'
+import DateTimePicker from 'react-native-modal-datetime-picker'
+export default class CreateTimerConfigScene extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            configId:null,//配置项id
+            configId: null,//配置项id
             orgId: null,//网点id
             devicesList: null,//设备列表(开关类、行程类)
-            sensorsList: null,//传感器列表
             devicesTypeSelected: null,//自定义设备类型
             deviceTypeId: null,//设备类型id
             deviceId: null,//选择的设备id
             deviceActionList: null,//选择的设备对应的操作列表
             upperAction: null,//上限绑定的操作
             lowerAction: null,//下限绑定的操作
-            sensorId: null,//选择的传感器id
-            sensorTypeId: null,//选择的传感器对应的设备类型id
-            ECLs: null,//传感器对应的环境参数列表
-            ECLsId: null,//选择的环境参数id
-            upper: 0,//上限值
-            upperSelected: null,//自定义上限值对应的操作的选中状态
-            lower: 0,//下限值
-            lowerSelected: null //自定义下限值对应的操作的选中状态
-
+            upper: null,//时间1
+            lower: null,//时间2
+            upperSelected: null,//时间1对应的操作的选中状态
+            lowerSelected: null, //时间2对应的操作的选中状态
+            upperShow:null,
+            lowerShow:null
         }
     }
     //获取设备
@@ -72,80 +70,43 @@ export default class CreateAutomateconfig extends Component {
                     deviceActionList: res.data
                 })
                 if (this.state.deviceActionList) {
-                    this.state.deviceActionList.forEach((deviceAction,index) => {
-                        if(this.state.upperAction==deviceAction.id){
+                    this.state.deviceActionList.forEach((deviceAction, index) => {
+                        if (this.state.upperAction == deviceAction.id) {
                             this.setState({
-                                upperSelected:index
+                                upperSelected: index
                             })
                         }
-                        if(this.state.lowerAction==deviceAction.id){
+                        if (this.state.lowerAction == deviceAction.id) {
                             this.setState({
-                                lowerSelected:index
-                            })    
+                                lowerSelected: index
+                            })
                         }
-                    });    
+                    });
                 } else {
-                    console.info('没状态')    
+                    console.info('没状态')
                 }
             }
         })
 
     }
-    //获取传感器
-    getSensorsList = (orgId, category) => {
-        let headers = {
-            'X-Token': token
-        };
-        let params = {
-            "orgId": orgId,
-            "category": category
-        }
-        Network.get(api.HOST + api.GETLOGICDEVICESLIST, params, headers, (res) => {
-            // console.info(res)
-            if (res.meta.success) {
-                this.setState({
-                    sensorsList: res.data
-                })
-            }
-        })
-    }
-    //获取传感器环境参数
-    getECLsList = (deviceTypeId) => {
-        let headers = {
-            'X-Token': token
-        };
-        let params = {
-            "deviceTypeId": deviceTypeId
-        }
-        Network.get(api.HOST + api.GETECLS, params, headers, (res) => {
-            // console.info(res)
-            if (res.meta.success) {
-                this.setState({
-                    ECLs: res.data
-                })
-            }
-        })
-    }
     //选择设备类型
     selectDeviceType = (orgId, category) => {
         this.setState({
             devicesTypeSelected: category,
-            devicesList:null,
-            deviceId:null,
-            sensorsList:null,
-            sensorId:null,
-            ECLs:null,
-            ECLsId:null,
-            deviceActionList:null,
-            upperAction:null,
-            upper:0,
-            lower:0,
-            upperSelected:null,
-            lowerSelected:null,
-            lowerAction:null
+            devicesList: null,
+            deviceId: null,
+            deviceActionList: null,
+            upperAction: null,
+            upper: null,
+            lower: null,
+            upperSelected: null,
+            lowerSelected: null,
+            lowerAction: null,
+            upperShow:null,
+            lowerShow:null
         })
         this.getDevicesList(orgId, category)
-        
+
     }
     //选择操作
     selectDeviceAction(item, index, configType) {
@@ -165,7 +126,7 @@ export default class CreateAutomateconfig extends Component {
         }
     }
     //提交配置
-    saveConfigData=()=>{
+    saveConfigData = () => {
         const {
             orgId,
             configId,
@@ -174,11 +135,6 @@ export default class CreateAutomateconfig extends Component {
             deviceTypeId,
             deviceActionList,
             devicesList,
-            sensorsList,
-            sensorId,
-            sensorTypeId,
-            ECLs,
-            ECLsId,
             upper,
             lower,
             upperSelected,
@@ -186,41 +142,15 @@ export default class CreateAutomateconfig extends Component {
             upperAction,
             lowerAction,
         } = this.state;
-        let regInt = /^\d+$/;
         if (!deviceId) {
-            toastShort('设置失败,请选择设备');
-            return false
-        }
-        if (!sensorId) {
-            toastShort('设置失败,请选择传感器');
-            return false
-        }
-        if (!ECLsId) {
-            toastShort('设置失败,请选择环境参数');
-            return false
-        }
-        if (!regInt.test(upper)) {
-            toastShort('上限值设置不正确,请重新设置');
-            return false
-        }
-        if (!regInt.test(lower)) {
-            toastShort('上限值设置不正确,请重新设置');
-            return false
-        }
-        if (parseInt(upper) < parseInt(lower) || parseInt(lower) > parseInt(upper) || parseInt(upper)== parseInt(lower)) {
-            toastShort('上下限值设置不正确,请重新设置');
-            return false
+            toastShort('请选择设备')
         }
         if (!upperAction) {
-            toastShort('设置失败,上限操作未设置');
+            toastShort('设置失败,定时操作1未设置');
             return false
         }
         if (!lowerAction) {
-            toastShort('设置失败,下限操作未设置');
-            return false
-        }
-        if (lowerAction==upperAction) {
-            toastShort('设置失败,上下限操作设置不能相同');
+            toastShort('设置失败,定时操作2未设置');
             return false
         }
         let headers = {
@@ -228,57 +158,91 @@ export default class CreateAutomateconfig extends Component {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         };
-        let params ={
-            "id":(configId)?configId:null,
-            "columnDesId": ECLsId,
+        let params = {
+            "id": (configId) ? configId : null,
             "deviceId": deviceId,
-            "downDeviceActionId":lowerAction,
-            "downLimit":parseInt(lower),
+            "downDeviceActionId": lowerAction,
+            "downLimit": lower,
             "orgId": orgId,
-            "sensorId": sensorId,
             "upDeviceActionId": upperAction,
-            "upLimit":parseInt(upper)
-          }
+            "upLimit": upper
+        }
         Network.postJson(api.HOST + api.SAVECONFAUTOMATION, params, headers, (res) => {
             // console.info(res)
             if (res.meta.success) {
                 toastShort('保存成功')
-                this.props.navigation.navigate('AutomateConfig',{'orgId':orgId})
+                this.props.navigation.navigate('TimerConfig', { 'orgId': orgId })
             }else{
                 toastShort(res.meta.message)
             }
         })
     }
-    componentDidMount(){
-        const { navigation } = this.props;
-        let config=navigation.state.params.item;
-        let orgId = navigation.state.params.orgId;
-        let deviceTypeCategory=navigation.state.params.deviceTypeCategory;
-        let sensorTypeId=navigation.state.params.sensorTypeId;
-        let deviceTypeId=navigation.state.params.deviceTypeId;
+    showStartDateTimePicker = () =>
+        this.setState({ startDateTimePickerVisible: true });
+
+    showEndDateTimePicker = () => this.setState({ endDateTimePickerVisible: true });
+
+    hideStartDateTimePicker = () =>
+        this.setState({ startDateTimePickerVisible: false });
+
+    hideEndDateTimePicker = () =>
+        this.setState({ endDateTimePickerVisible: false });
+
+    handleStartDatePicked = date => {
+        let startH=(date.getHours()>=10)?date.getHours():'0'+date.getHours().toString();
+        let startM=(date.getMinutes()>=10)?date.getMinutes():'0'+date.getMinutes().toString();
+        let starthN=parseInt(startH);
+        let startmN=parseInt(startM);
         this.setState({
-            orgId:orgId,
-            deviceTypeId:deviceTypeId,
-            devicesTypeSelected:deviceTypeCategory,
-            sensorTypeId:sensorTypeId,
+            upper: (starthN<<8)+startmN,
+            upperShow:startH+':'+startM,
+        })
+        // console.info(startH,startM)
+        this.hideStartDateTimePicker();
+    };
+
+    handleEndDatePicked = date => {
+        let endH=(date.getHours()>=10)?date.getHours():'0'+date.getHours().toString();
+        let endM=(date.getMinutes()>=10)?date.getMinutes():'0'+date.getMinutes().toString();
+        let endhN=parseInt(endH);
+        let endmN=parseInt(endM);
+        this.setState({
+            lower: (endhN<<8)+endmN,
+            lowerShow:endH+':'+endM,
+        })
+        this.hideEndDateTimePicker();
+    };
+    componentDidMount() {
+        const { navigation } = this.props;
+        let config = navigation.state.params.item;
+        let orgId = navigation.state.params.orgId;
+        let deviceTypeCategory = navigation.state.params.deviceTypeCategory;
+        let deviceTypeId = navigation.state.params.deviceTypeId;
+        let startTimer=navigation.state.params.startTimer;
+        let endTimer=navigation.state.params.endTimer;
+        // console.info(startTimer,endTimer)
+        this.setState({
+            orgId: orgId,
+            deviceTypeId: deviceTypeId,
+            devicesTypeSelected: deviceTypeCategory,
         })
         if (config) {
             this.setState({
-                configId:config.id,
-                deviceId:config.deviceId,
-                sensorId:config.sensorId,
-                ECLsId:config.columnDesId,
-                upper:config.upLimit,
-                upperAction:config.upDeviceActionId,
-                lower:config.downLimit,
-                lowerAction:config.downDeviceActionId
+                configId: config.id,
+                deviceId: config.deviceId,
+                sensorId: config.sensorId,
+                ECLsId: config.columnDesId,
+                upper: config.upLimit,
+                upperAction: config.upDeviceActionId,
+                lower: config.downLimit,
+                lowerAction: config.downDeviceActionId,
+                upperShow:startTimer,
+                lowerShow:endTimer
             })
-            this.getDevicesList(orgId, deviceTypeCategory)   
-            this.getSensorsList(orgId, 1);
+            this.getDevicesList(orgId, deviceTypeCategory)
             this.getDeviceActionList(deviceTypeId);
-            this.getECLsList(sensorTypeId);
-            
-        }else{
+
+        } else {
             // console.info(1)
         }
     }
@@ -290,18 +254,16 @@ export default class CreateAutomateconfig extends Component {
             deviceId,
             deviceActionList,
             devicesList,
-            sensorsList,
-            sensorId,
-            ECLs,
-            ECLsId,
             upper,
             lower,
             upperSelected,
             lowerSelected,
             upperAction,
-            lowerAction
+            lowerAction,
+            upperShow,
+            lowerShow
         } = this.state;
-        
+
         return (
             <View style={styles.container}>
                 <View style={styles.selectDeviceTypeStyle}>
@@ -354,9 +316,7 @@ export default class CreateAutomateconfig extends Component {
                                         deviceId: itemValue,
                                         deviceTypeId: devicesList[itemIndex].typeId
                                     })
-                                    // console.info(devicesList[itemIndex].typeId)
                                     this.getDeviceActionList(devicesList[itemIndex].typeId);
-                                    this.getSensorsList(orgId, 1);
                                 }}>
                                 {devicesList.map((item) => (<Picker.Item key={item.id} value={item.id} label={item.deviceName} />))}
                             </Picker> :
@@ -365,64 +325,17 @@ export default class CreateAutomateconfig extends Component {
                     </View>
 
                 </View>
-                <View style={styles.selectDeviceStyle}>
-                    <View style={styles.deviceLeft}>
-                        <Text style={styles.deviceTipStyle}>选择传感器</Text>
-                    </View>
-                    <View style={styles.deviceRight}>
-                        {(sensorsList && sensorsList.length > 0) ?
-                            <Picker
-                                selectedValue={sensorId}
-                                style={styles.devicePicker}
-                                onValueChange={(itemValue, itemIndex) => {
-                                    this.setState({
-                                        sensorId: itemValue,
-                                        sensorTypeId: sensorsList[itemIndex].typeId
-                                    })
-                                    this.getECLsList(sensorsList[itemIndex].typeId)
-                                }}>
-                                {sensorsList.map((item) => (<Picker.Item key={item.id} value={item.id} label={item.deviceName} />))}
-                            </Picker> :
-                            <Text style={styles.nodeviceTip}>请先选择设备</Text>}
-                    </View>
-
-                </View>
-                <View style={[styles.selectDeviceStyle, theme.noBorerBottom]}>
-                    <View style={styles.deviceLeft}>
-                        <Text style={styles.deviceTipStyle}>选择环境参数</Text>
-                    </View>
-                    <View style={styles.deviceRight}>
-                        {(ECLs && ECLs.length > 0) ?
-                            <Picker
-                                selectedValue={ECLsId}
-                                style={styles.devicePicker}
-                                onValueChange={(itemValue, itemIndex) => {
-                                    this.setState({ ECLsId: itemValue })
-                                }}>
-                                {ECLs.map((item) => (<Picker.Item key={item.id} value={item.id} label={item.name} />))}
-                            </Picker> :
-                            <Text style={styles.nodeviceTip}>请先选择传感器</Text>}
-
-                    </View>
-                </View>
-                {(ECLsId) ?
+                {(deviceId) ?
                     <View style={styles.setContentStyle}>
                         <View style={styles.setItemStyle}>
                             <View style={styles.setItemLeftStyle}>
-                                <Text style={styles.setItemLeftTipStyle}>上限值</Text>
-                                <TextInput
-                                    style={styles.textInputStyle}
-                                    maxLength={4}
-                                    // editable={this.state.editable}
-                                    placeholder="正整数"
-                                    placeholderTextColor="#ccc"
-                                    underlineColorAndroid="transparent"
-                                    keyboardType='numeric'
-                                    ref='upper'
-                                    defaultValue={`${upper}`}
-                                    onChangeText={(text) => this.setState({ upper: text })}
-                                />
-                                <Text style={styles.tipEndStyle}></Text>
+                                <Text style={styles.setItemLeftTipStyle}>时间1</Text>
+                                <Text style={styles.textInputStyle}>{upperShow}</Text>
+                                <TouchableOpacity style={styles.dateTimerStyle}
+                                    onPress={this.showStartDateTimePicker}
+                                    activeOpacity={.7}>
+                                    <MaterialCommunityIcons name={'timer'} size={20} color={theme.theme} />
+                                </TouchableOpacity>
                             </View>
                             <View style={styles.setItemRightStyle}>
                                 {(deviceActionList && deviceActionList.length > 0) ?
@@ -444,23 +357,18 @@ export default class CreateAutomateconfig extends Component {
                                             <Text style={styles.actionName}>{item.name}</Text>
                                         </TouchableOpacity>)) : null}
                             </View>
+
                         </View>
                         <View style={styles.setItemStyle}>
                             <View style={styles.setItemLeftStyle}>
-                                <Text style={styles.setItemLeftTipStyle}>下限值</Text>
-                                <TextInput
-                                    style={styles.textInputStyle}
-                                    maxLength={4}
-                                    // editable={this.state.editable}
-                                    placeholder="正整数"
-                                    placeholderTextColor="#ccc"
-                                    underlineColorAndroid="transparent"
-                                    keyboardType='numeric'
-                                    ref='lower'
-                                    defaultValue={`${lower}`}
-                                    onChangeText={(text) => this.setState({ lower: text })}
-                                />
-                                <Text style={styles.tipEndStyle}></Text>
+                                <Text style={styles.setItemLeftTipStyle}>时间2</Text>
+                                <Text style={styles.textInputStyle}>{lowerShow}</Text>
+                                <TouchableOpacity
+                                    style={styles.dateTimerStyle}
+                                    activeOpacity={.7}
+                                    onPress={this.showEndDateTimePicker}>
+                                    <MaterialCommunityIcons name={'timer'} size={20} color={theme.theme} />
+                                </TouchableOpacity>
                             </View>
                             <View style={styles.setItemRightStyle}>
                                 {(deviceActionList && deviceActionList.length > 0) ?
@@ -468,7 +376,8 @@ export default class CreateAutomateconfig extends Component {
                                         <TouchableOpacity
                                             key={index}
                                             activeOpacity={.9}
-                                            style={styles.actionCheckboxStyle} onPress={() => this.selectDeviceAction(item, index, 2)}>
+                                            style={styles.actionCheckboxStyle}
+                                            onPress={() => this.selectDeviceAction(item, index, 2)}>
                                             {(lowerSelected == index) ?
                                                 <MaterialCommunityIcons
                                                     name='check-circle'
@@ -481,22 +390,38 @@ export default class CreateAutomateconfig extends Component {
                                             <Text style={styles.actionName}>{item.name}</Text>
                                         </TouchableOpacity>)) : null}
                             </View>
+
                         </View>
+
                     </View> :
-                    <View style={styles.noConfigStyle}>
+                    <View style={theme.nodata}>
                         <MaterialCommunityIcons
                             name='alert-box'
                             size={30}
                             color={theme.bgGray2} />
-                        <Text style={styles.noConfigTip}>阈值设置之前,必须先关联相关设备、传感器、环境参数等</Text>
+                        <Text style={styles.noConfigTip}>先关联相关设备、再选择定时执行的设备操作</Text>
                     </View>}
                 <View style={styles.btnGroup}>
                     <Button
                         btnStyle={[styles.configBtnStyle, styles.saveBtnStyle]}
                         btnTextStyle={styles.configBtnTxtStyle}
                         title='保存'
-                        onPress={() => { this.saveConfigData() }} />
+                        onPress={this.saveConfigData} />
                 </View>
+                <DateTimePicker
+                    mode={'time'}
+                    date={new Date()}
+                    isVisible={this.state.startDateTimePickerVisible}
+                    onConfirm={this.handleStartDatePicked}
+                    onCancel={this.hideStartDateTimePicker}
+                />
+                <DateTimePicker
+                    mode={'time'}
+                    date={new Date()}
+                    isVisible={this.state.endDateTimePickerVisible}
+                    onConfirm={this.handleEndDatePicked}
+                    onCancel={this.hideEndDateTimePicker}
+                />
             </View>
         )
     }
@@ -521,6 +446,9 @@ const styles = StyleSheet.create({
     },
     deviceTypeTipStyle: {
         fontSize: 14
+    },
+    dateTimerStyle: {
+        alignSelf: 'center'
     },
     deviceTypeCheckboxStyle: {
         flexDirection: 'row',
@@ -559,24 +487,30 @@ const styles = StyleSheet.create({
         paddingRight: 6
     },
     setContentStyle: {
+        flex: 1,
         paddingBottom: 10,
         borderBottomWidth: screen.onePixel,
         borderBottomColor: theme.bgGray2,
     },
     setItemStyle: {
-        paddingVertical: 6,
+        marginVertical: 10,
         flexDirection: 'row',
     },
     setItemLeftStyle: {
         flexDirection: 'row',
-        alignItems: 'center'
+    },
+    setItemRightStyle: {
+        flexDirection: 'row',
+        paddingLeft: 10
     },
     setItemLeftTipStyle: {
-        
-        paddingLeft:10,
-        justifyContent: 'center'
+        paddingLeft: 10,
+        alignSelf: 'center'
     },
     textInputStyle: {
+        textAlign: 'center',
+        textAlignVertical: 'center',
+        height: 40,
         marginHorizontal: 5,
         fontSize: 14,
         width: 80,
@@ -584,26 +518,22 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: theme.theme,
     },
-    setItemRightStyle: {
-        flexDirection: 'row',
-
-    },
     noConfigStyle: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        // backgroundColor:'blue'
     },
     noConfigTip: {
         color: theme.colorG,
-        padding:10
+        padding: 10
 
     },
     actionCheckboxStyle: {
-        
         flexDirection: 'row',
-        justifyContent:'flex-end',
+        justifyContent: 'flex-end',
         alignItems: 'center',
-        marginHorizontal:5
+        marginHorizontal: 5
     },
     actionName: {
         fontSize: 14,

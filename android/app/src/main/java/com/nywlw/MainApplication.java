@@ -3,9 +3,7 @@ package com.nywlw;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-import com.github.yamill.orientation.OrientationPackage;
 import com.brentvatne.react.ReactVideoPackage;
-import cn.jpush.reactnativejpush.JPushPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.beefe.picker.PickerViewPackage;
 import com.facebook.react.ReactNativeHost;
@@ -30,9 +28,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new OrientationPackage(),
             new ReactVideoPackage(),
-            new JPushPackage(SHUTDOWN_TOAST, SHUTDOWN_LOG),
             new VectorIconsPackage(),
             new PickerViewPackage()
       );

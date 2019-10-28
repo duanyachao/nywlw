@@ -10,9 +10,7 @@ export default class ConfigItemsScene extends Component {
     constructor(props){
         super(props)
         this.state={
-            autoConfigDataList:null,
-            createAble:false,
-  
+            orgId:null
         }
     }
     areaChange(orgId, terminalId, terminalSerialNum) {
@@ -20,37 +18,15 @@ export default class ConfigItemsScene extends Component {
             orgId:orgId
         })
         // console.info(orgId, terminalId, terminalSerialNum)    
-    }
-    //获取配置信息
-    getAutomateConfigDataList=(orgId)=>{
-            let headers = {
-                'X-Token': token
-            };
-            let params = {
-                "orgId": orgId,
-            }
-            Network.get(api.HOST + api.GETCONFIGLIST, params, headers, (res) => {
-                // console.info(res)
-                if (res.meta.success) {
-                    this.setState({
-                        autoConfigDataList: res.data
-                    })
-                }
-            })
-        }
-    
-    componentDidMount(){
-        const {orgId}=this.state;
-        this.getAutomateConfigDataList(orgId);
-    }
+    }    
     render() {
         const {navigation}=this.props;
-        const {orgId,autoConfigDataList,logicTypeSDevicesList,logicTypeTDevicesList,sensorsList}=this.state;
+        const {orgId}=this.state;
         return (
             <View style={styles.container}>
                 <Area callbackParent={(orgId, terminalId, terminalSerialNum) => this.areaChange(orgId, terminalId, terminalSerialNum)}></Area>
                 <View style={styles.configWrapperStyle}>
-                    <TouchableOpacity onPress={() => navigation.navigate('WarnConfig')}>
+                    <TouchableOpacity onPress={() => navigation.navigate('WarnConfig',{'orgId':orgId})}>
                         <View style={styles.configItemWrapperStyle}>
                             <View style={styles.itemLeft}>
                                 <Text style={styles.itemName}>报警设置</Text>
@@ -61,10 +37,7 @@ export default class ConfigItemsScene extends Component {
                             </View>
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigation.navigate('AutomateConfig',{
-                        'autoConfigDataList':autoConfigDataList,
-                        'orgId':orgId
-                        })}>
+                    <TouchableOpacity onPress={() => navigation.navigate('AutomateConfig',{'orgId':orgId})}>
                         <View style={styles.configItemWrapperStyle}>
                             <View style={styles.itemLeft}>
                                 <Text style={styles.itemName}>阈值设置</Text>
@@ -75,18 +48,29 @@ export default class ConfigItemsScene extends Component {
                             </View>
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigation.navigate('TimerConfig')}>
+                    <TouchableOpacity onPress={() => navigation.navigate('TimerConfig',{'orgId':orgId})}>
                         <View style={styles.configItemWrapperStyle}>
                             <View style={styles.itemLeft}>
                                 <Text style={styles.itemName}>定时设置</Text>
-                                <Text style={styles.itemTip}>设置设备的开启时间和关闭时间</Text>
+                                <Text style={styles.itemTip}>设置设备的运行时间</Text>
                             </View>
                             <View style={styles.itemRight}>
                                 <Icon  name='angle-right' size={16} color="#ccc"></Icon>
                             </View>
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigation.navigate('DevicesPortsConfig')}>
+                    <TouchableOpacity onPress={() => navigation.navigate('DurationConfig',{'orgId':orgId})}>
+                        <View style={styles.configItemWrapperStyle}>
+                            <View style={styles.itemLeft}>
+                                <Text style={styles.itemName}>时长设置</Text>
+                                <Text style={styles.itemTip}>设置设备的运行时长</Text>
+                            </View>
+                            <View style={styles.itemRight}>
+                                <Icon  name='angle-right' size={16} color="#ccc"></Icon>
+                            </View>
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => navigation.navigate('DevicesPortsConfig',{'orgId':orgId})}>
                         <View style={styles.configItemWrapperStyle}>
                             <View style={styles.itemLeft}>
                                 <Text style={styles.itemName}>端口设置</Text>
@@ -97,7 +81,7 @@ export default class ConfigItemsScene extends Component {
                             </View>
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigation.navigate('RemoterConfigConfig')}>
+                    <TouchableOpacity onPress={() => navigation.navigate('RemoterConfigConfig',{'orgId':orgId})}>
                         <View style={[styles.configItemWrapperStyle,styles.marginBottom]}>
                             <View style={styles.itemLeft}>
                                 <Text style={styles.itemName}>遥控设置</Text>

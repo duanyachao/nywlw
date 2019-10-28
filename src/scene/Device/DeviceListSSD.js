@@ -24,20 +24,6 @@ export default class DeviceListSSD extends Component {
             showSetting:false
         }
     }
-    sendDevicesSetDatas=(orgId)=>{
-        let headers = {
-            'X-Token': token
-        };
-        let params = { "orgId": orgId };
-        Network.get(api.HOST + api.SENDDEVICESET, params, headers, (res) => {
-            // console.info(res)
-            if(res.meta.success){
-                toastShort('下发信息成功')        
-            }else{
-                toastShort(res.meta.message)     
-            }
-        })
-    }
     keyExtractor = (item, index) =>index;
     renderItem(item) {
         let {orgId}=this.props;
@@ -82,13 +68,6 @@ export default class DeviceListSSD extends Component {
         const itemH = 100;
         return (
             <View style={styles.container}>
-                <View style={styles.setBtnsStyle}>
-                    <Button 
-                        btnStyle={[styles.deviceSetBtnStyle]}
-                        btnTextStyle={styles.deviceSetBtnTxtStyle} 
-                        title='下发设置' 
-                        onPress={()=> this.sendDevicesSetDatas(orgId)} />
-                </View>
                 <FlatList
                     data={devices}
                     getItemLayout={(item, index) => ({ length: itemH, offset: itemH * index, index })}

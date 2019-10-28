@@ -6,10 +6,11 @@ import ConfigItemsScene from './ConfigItemsScene'
 import WarnConfigScene from './warnconfig/WarnConfigScene'
 import AutomateConfigScene from './automateconfig/AutomateConfigScene'
 import CreateAutomateconfigScene from './automateconfig/CreateAutomateconfigScene'
-// import AutomateStack from './automateconfig/AutomateStack'
 import DevicesPortsConfigScene from './portconfig/DevicesPortsConfigScene'
-import TimerConfigScene from './timeconfig/TimerConfigScene'
 import RemoterConfigScene from './remoteconfig/RemoterConfigScene'
+import DurationConfigScene from './durationconfig/DurationConfigScene'
+import TimerConfigScene from './timeconfig/TimerConfigScene'
+import CreateTimerConfigScene from './timeconfig/CreateTimerConfigScene'
 export default class DevicesConfScene extends Component {
     render() {
         return <ConfigStack/>
@@ -44,6 +45,18 @@ const ConfigStack=StackNavigator({
         screen: TimerConfigScene,
         navigationOptions: ({navigation}) => ({
             header: <Header title='定时设置' leftBtn={true} rightBtn={false} navigation={navigation}></Header>
+        })
+    },
+    CreateTimerConfig: {
+        screen: CreateTimerConfigScene,
+        navigationOptions: ({navigation}) => ({
+            header: <Header title='新增/修改定时设置' leftBtn={true} rightBtn={false} navigation={navigation}></Header>
+        })
+    },
+    DurationConfig: {
+        screen: DurationConfigScene,
+        navigationOptions: ({navigation}) => ({
+            header: <Header title='时长设置' leftBtn={true} rightBtn={false} navigation={navigation}></Header>
         })
     },
     DevicesPortsConfig: {

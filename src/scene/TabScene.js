@@ -13,7 +13,6 @@ import VideoScene from './Video/VideoScene'
 import MineScene from './Mine/MineScene';
 import { theme, system, screen } from '../common';
 import { TabBarItem, Header,} from '../components';
-import JPushModule from 'jpush-react-native';
 const Tabs = TabNavigator({
     Warn: {
         screen: EnvDataScene,
@@ -78,15 +77,6 @@ const TabOptions = (tabBarTitle,navigation,iconName, isheader, navTitle) => {
 class TabScene extends Component {
      
      componentDidMount() {
-         console.info(this.props.navigation)
-        JPushModule.addReceiveOpenNotificationListener((message) => {
-                InteractionManager.runAfterInteractions(() => {
-                    this.props.navigation.navigate('Msg', { title: '我的消息' })
-                })
-
-
-            // DeviceEventEmitter.emit('msg');        
-        });
 
     }
     render() {
