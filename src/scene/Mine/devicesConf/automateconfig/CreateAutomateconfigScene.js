@@ -55,6 +55,14 @@ export default class CreateAutomateconfig extends Component {
                 this.setState({
                     devicesList: res.data
                 })
+                if (!this.state.deviceId) {
+                    this.setState({
+                        deviceId: res.data[0].id,
+                        deviceTypeId: res.data[0].typeId
+                    })
+                    this.getDeviceActionList(res.data[0].typeId);
+                    this.getSensorsList(orgId, 1);
+                }
             }
         })
     }
@@ -101,11 +109,18 @@ export default class CreateAutomateconfig extends Component {
             "category": category
         }
         Network.get(api.HOST + api.GETLOGICDEVICESLIST, params, headers, (res) => {
-            // console.info(res)
+            console.info(res)
             if (res.meta.success) {
                 this.setState({
                     sensorsList: res.data
                 })
+                if (!this.state.sensorId) {
+                    this.setState({
+                        sensorId: res.data[0].id,
+                        sensorTypeId: res.data[0].typeId
+                    })
+                    this.getECLsList(res.data[0].typeId)   
+                }
             }
         })
     }
@@ -123,6 +138,11 @@ export default class CreateAutomateconfig extends Component {
                 this.setState({
                     ECLs: res.data
                 })
+                if (!this.state.ECLsId) {
+                    this.setState({
+                        ECLsId:res.data[0].id    
+                    })
+                }
             }
         })
     }

@@ -26,10 +26,10 @@ export default class WeatherDataList extends Component {
     componentDidMount() {
         this.loadWeather()
     }
-    WdataList(){
+    WdataList= data =>{
         return (
             <View style={styles.wWrapper}>
-                {this.state.weatherData.map((item)=>{
+                {data.map((item)=>{
                     if(item.key=='FX'){
                         item.unitName='风';
                         if (item.value==0 || item.value==360) {
@@ -70,9 +70,9 @@ export default class WeatherDataList extends Component {
         let headers = {
             'X-Token': token
         };
-        let params = { "orgId": weatherStationOrgId };
-        Network.get(api.WEATHERURL, params, headers, (res) => {
-            // console.info(JSON.stringify(res))
+        let params = { "orgId": weatherStationOrgId};
+        Network.get(api.HOST+api.WEATHERURL, params, headers, (res) => {
+            // console.info(res)
             if (res.meta.success) {
                 this.setState({
                     weatherData:res.data
@@ -82,12 +82,15 @@ export default class WeatherDataList extends Component {
         })
     }
     render(){
+        const {weatherData}=this.state;
+        let  facName=(weatherData)?weatherData[0].facName:'';
+        let data=(weatherData)?weatherData[0].sensorVOs:'';
         return (
             <View style={styles.container}>
                 <View style={styles.wTitle}>
-                <Text style={styles.wTitleT}>气象站</Text>
+                <Text style={styles.wTitleT}>{facName}</Text>
                 </View>
-                {(this.state.weatherData)?this.WdataList():<View style={styles.nodata}><Text>暂无数据</Text></View>}
+                {(weatherData)?this.WdataList(data):<View style={styles.nodata}><Text>暂无数据</Text></View>}
             </View>
         )   
     }

@@ -166,7 +166,6 @@ export default class EnvDataScene extends Component {
             <View style={styles.container}>
                 <WeatherDataList/>
                 <Area callbackParent={(orgId, terminalId, terminalSerialNum) => this.areaChange(orgId, terminalId, terminalSerialNum)}></Area>
-                
                 {this.state.envDataList ? this.renderEnvDataInfoList(this.state.envDataList) : <View style={styles.noWarnWrapper}><Text>暂无数据</Text></View>}
             </View>
 

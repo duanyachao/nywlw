@@ -48,11 +48,18 @@ export default class CreateTimerConfigScene extends Component {
             "category": category
         }
         Network.get(api.HOST + api.GETLOGICDEVICESLIST, params, headers, (res) => {
-            // console.info(res)
+            console.info(res)
             if (res.meta.success) {
                 this.setState({
                     devicesList: res.data
                 })
+                if (!this.state.deviceId) {
+                    this.setState({
+                        deviceId: res.data[0].id,
+                        deviceTypeId: res.data[0].typeId
+                    })
+                    this.getDeviceActionList(res.data[0].typeId);
+                }    
             }
         })
     }
@@ -230,8 +237,6 @@ export default class CreateTimerConfigScene extends Component {
             this.setState({
                 configId: config.id,
                 deviceId: config.deviceId,
-                sensorId: config.sensorId,
-                ECLsId: config.columnDesId,
                 upper: config.upLimit,
                 upperAction: config.upDeviceActionId,
                 lower: config.downLimit,

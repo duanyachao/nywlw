@@ -5,6 +5,7 @@ export default {
     colorLG:'#D3D3D3',
     bgGray1:'#f5f5f5',
     bgGray2:'#dcdcdc',
+    bgGray3:'#EEE9E9',
     colorFirebrick:'#B22222',
     colorTurquoise:'#40E0D0',
     theme: '#06C1AE',
@@ -79,7 +80,7 @@ export const rowStyle=StyleSheet.create({
         marginLeft: 20,
         height: 45,
         justifyContent: 'space-between',
-        borderBottomColor: '#ccc',
+        borderBottomColor:'#EEE9E9',
         borderBottomWidth:screen.onePixel,
         margin:2
     },

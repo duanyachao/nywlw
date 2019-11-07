@@ -26,17 +26,19 @@ export default class ConfigItemsScene extends Component {
             <View style={styles.container}>
                 <Area callbackParent={(orgId, terminalId, terminalSerialNum) => this.areaChange(orgId, terminalId, terminalSerialNum)}></Area>
                 <View style={styles.configWrapperStyle}>
+                    
                     <TouchableOpacity onPress={() => navigation.navigate('WarnConfig',{'orgId':orgId})}>
                         <View style={styles.configItemWrapperStyle}>
                             <View style={styles.itemLeft}>
                                 <Text style={styles.itemName}>报警设置</Text>
-                                <Text style={styles.itemTip}>和设备操作无关</Text>
+                                <Text style={styles.itemTip}>设置和设备操作无关</Text>
                             </View>
                             <View style={styles.itemRight}>
                                 <Icon  name='angle-right' size={16} color="#ccc"></Icon>
                             </View>
                         </View>
-                    </TouchableOpacity>
+                    </TouchableOpacity> 
+                   
                     <TouchableOpacity onPress={() => navigation.navigate('AutomateConfig',{'orgId':orgId})}>
                         <View style={styles.configItemWrapperStyle}>
                             <View style={styles.itemLeft}>
@@ -60,7 +62,7 @@ export default class ConfigItemsScene extends Component {
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => navigation.navigate('DurationConfig',{'orgId':orgId})}>
-                        <View style={styles.configItemWrapperStyle}>
+                        <View style={[styles.configItemWrapperStyle,styles.marginBottom]}>
                             <View style={styles.itemLeft}>
                                 <Text style={styles.itemName}>时长设置</Text>
                                 <Text style={styles.itemTip}>设置设备的运行时长</Text>
@@ -70,7 +72,7 @@ export default class ConfigItemsScene extends Component {
                             </View>
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigation.navigate('DevicesPortsConfig',{'orgId':orgId})}>
+                    {/* <TouchableOpacity onPress={() => navigation.navigate('DevicesPortsConfig',{'orgId':orgId})}>
                         <View style={styles.configItemWrapperStyle}>
                             <View style={styles.itemLeft}>
                                 <Text style={styles.itemName}>端口设置</Text>
@@ -80,8 +82,8 @@ export default class ConfigItemsScene extends Component {
                                 <Icon  name='angle-right' size={16} color="#ccc"></Icon>
                             </View>
                         </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigation.navigate('RemoterConfigConfig',{'orgId':orgId})}>
+                    </TouchableOpacity> */}
+                    <TouchableOpacity onPress={() => navigation.navigate('RemoterConfig',{'orgId':orgId})}>
                         <View style={[styles.configItemWrapperStyle,styles.marginBottom]}>
                             <View style={styles.itemLeft}>
                                 <Text style={styles.itemName}>遥控设置</Text>
@@ -110,11 +112,9 @@ const styles = StyleSheet.create({
     configItemWrapperStyle:{
         flexDirection:'row',
         justifyContent:'space-between',
-        borderBottomWidth:screen.onePixel,
-        borderBottomColor:'#ccc',
+        borderBottomWidth:1,
+        borderBottomColor:theme.bgGray3,
         paddingVertical:5,
-        
-        
     },
     itemLeft:{
         paddingLeft:5,

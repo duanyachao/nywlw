@@ -5,6 +5,7 @@ import { theme,screen } from '../../../../common'
 import { Network, toastShort} from '../../../../utils'
 import {Button} from '../../../../components'
 import api from '../../../../api'
+import pxToDp from './../../../../common/pxToDp'
 export default class TimerItemConfig extends Component {
     constructor(props) {
         super(props);
@@ -19,7 +20,7 @@ export default class TimerItemConfig extends Component {
     }
     saveSetData(deviceData,orgId) {
         const {setId,durationOn,durationOff,durationRunningPer,durationRunningInterval}=this.state;
-        console.info('开启时长:'+durationOn,'关闭时长:'+durationOff,'单次运行时长:'+durationRunningPer,'单次间隔时长:'+durationRunningInterval)
+        // console.info('开启时长:'+durationOn,'关闭时长:'+durationOff,'单次运行时长:'+durationRunningPer,'单次间隔时长:'+durationRunningInterval)
         var regInt = /^\d+$/;
         if (!regInt.test(durationOn)) {
             toastShort('开启时长不正确,请重新设置');
@@ -225,7 +226,8 @@ const styles = StyleSheet.create({
     textInputStyle:{
         marginHorizontal:5,
         fontSize:14,
-        width:80,
+        width:pxToDp(110),
+        // width:120,
         borderRadius:4,
         borderWidth:1,
         borderColor:theme.theme,

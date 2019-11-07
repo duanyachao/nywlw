@@ -8,9 +8,11 @@ import AutomateConfigScene from './automateconfig/AutomateConfigScene'
 import CreateAutomateconfigScene from './automateconfig/CreateAutomateconfigScene'
 import DevicesPortsConfigScene from './portconfig/DevicesPortsConfigScene'
 import RemoterConfigScene from './remoteconfig/RemoterConfigScene'
+import CreateRemoterConfigScene from './remoteconfig/CreateRemoterConfigScene'
 import DurationConfigScene from './durationconfig/DurationConfigScene'
 import TimerConfigScene from './timeconfig/TimerConfigScene'
 import CreateTimerConfigScene from './timeconfig/CreateTimerConfigScene'
+
 export default class DevicesConfScene extends Component {
     render() {
         return <ConfigStack/>
@@ -65,12 +67,18 @@ const ConfigStack=StackNavigator({
             header: <Header title='端口设置' leftBtn={true} rightBtn={false} navigation={navigation}></Header>
         })
     },
-    RemoterConfigConfig: {
+    RemoterConfig: {
         screen: RemoterConfigScene,
         navigationOptions: ({navigation}) => ({
             header: <Header title='遥控设置' leftBtn={true} rightBtn={false} navigation={navigation}></Header>
         })
-    }
+    },
+    // UpdateRemoter: {
+    //     screen: CreateRemoterConfigScene,
+    //     navigationOptions: ({navigation}) => ({
+    //         header: <Header title='新增/修改遥控设置' leftBtn={true} rightBtn={false} navigation={navigation}></Header>
+    //     })
+    // }
 },
 {
     initialRouteName: 'ConfigItems',

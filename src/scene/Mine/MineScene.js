@@ -85,7 +85,7 @@ class MineScene extends Component {
         return (
             <View style={styles.container}>
                 <View style={[styles.userWrapper, styles.marginBottom]}>
-                    <Image style={styles.touxPic} source={require('../../imgs/userCenter/user.png')}></Image>
+                    <Image style={styles.touxPic} source={require('./../../imgs/userCenter/user.png')}></Image>
                     <TouchableOpacity
                         activeOpacity={.6}
                         onPress={() => this.props.navigation.navigate('UserInfo',
@@ -169,7 +169,6 @@ class MineScene extends Component {
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => this.props.navigation.navigate('DevicesConfg', { title: '我的设置' })}>
                     <View style={[rowStyle.myItem, rowStyle.noBorerBottom]}>
-                    
                         <View style={rowStyle.myItemLeft}>
                             <Icon style={rowStyle.tipIcon} name='cog' size={18} color={theme.theme}></Icon>
                             <Text style={rowStyle.itemTip}>我的设置</Text>
