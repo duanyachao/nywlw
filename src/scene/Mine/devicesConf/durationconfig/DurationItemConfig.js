@@ -42,11 +42,11 @@ export default class TimerItemConfig extends Component {
             toastShort('时长不能超过3200秒,请重新设置');
             return false
         }
-        if(durationRunningPer>durationOn){
+        if(parseInt(durationRunningPer)>parseInt(durationOn)){
             toastShort('单次运行时长不能大于开启时长,请重新设置');
             return false
         }
-        if(durationRunningPer>durationOff){
+        if(parseInt(durationRunningPer)>parseInt(durationOff)){
             toastShort('单次运行时长不能大于关闭时长,请重新设置');
             return false
         }
@@ -70,12 +70,15 @@ export default class TimerItemConfig extends Component {
             'id':setId
         };
         Network.postJson(api.HOST + api.SAVEDEVICESET, params, headers, (res) => {
-            console.info(res)
+            // console.info(res)
             if (res.meta && res.meta.success) {
                 this.setState({
                     editable:false
                 })
                 toastShort('保存成功')
+                setTimeout(() => {
+                    this.getDeviceSet(deviceData)    
+                }, 500);
             }
         })
 
@@ -91,7 +94,7 @@ export default class TimerItemConfig extends Component {
         };
         let params = { "deviceId":deviceData.id };
         Network.get(api.HOST + api.GETDEVICESET, params, headers, (res) => {
-            // console.info(res)
+            
             if (res.meta.success && res.data) {
                 this.setState({
                     setId:res.data.id,
@@ -100,11 +103,13 @@ export default class TimerItemConfig extends Component {
                     durationRunningPer:res.data.durationRunningPer,
                     durationRunningInterval:res.data.durationRunningInterval
                 })
+                // console.info(this.state.setId)
             }
         })
     }
     componentDidMount(){
         const {deviceData,orgId}=this.props;
+        // console.info(deviceData)
         this.getDeviceSet(deviceData)
     }
     render() {
