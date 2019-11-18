@@ -45,13 +45,18 @@ const styles = StyleSheet.create({
 export default class Header extends Component {
     constructor(props) {
         super(props);
+        this.state={
+            iconName:null
+        }
     }
-    msgButtonAction() {
-        // const {navigation} = this.props;
-        // console.info(navigation)
-        // InteractionManager.runAfterInteractions(() => {
-        //     navigation.navigate('Msg', { title: '我的消息' })
-        // })
+    rightBtnAction=(rightBtn) =>{
+        const {navigation} = this.props;
+        if (rightBtn=='skyatlas') {
+            InteractionManager.runAfterInteractions(() => {
+                navigation.navigate('Weather')
+            })    
+        }
+        
     }
     componentDidMount() {
 
@@ -62,7 +67,6 @@ export default class Header extends Component {
 
     render() {
         const{rightBtn,leftBtn,navigation}=this.props;
-        // console.info(navigation)
         return (
             <View>
                 <View style={styles.topBar}>
@@ -86,13 +90,13 @@ export default class Header extends Component {
                     {(rightBtn)?
                         <Icon.Button
                             borderRadius={0}
-                            name="commenting"
+                            name={`${rightBtn}`}
                             backgroundColor="transparent"
                             size={20}
                             color='#FFF'
                             activeOpacity={.2}
                             underlayColor={'transparent'}
-                            onPress={() => {}}
+                            onPress={()=>this.rightBtnAction(rightBtn)}
                             />:null}
                     </View>
                     

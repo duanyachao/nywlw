@@ -25,11 +25,6 @@ export default class EnvDataList extends Component {
 
         }
     }
-    componentDidMount() {
-        this.warnMsgListener = DeviceEventEmitter.addListener('receiveWarnMsg', (msg) => {
-
-        })
-    }
     componentWillReceiveProps(nextProps) {
         if (nextProps.envData !== this.props.envData) {
             this.setState({
@@ -47,28 +42,25 @@ export default class EnvDataList extends Component {
             unitCode:this.props.envData[Object.keys(this.props.envData)[0]].unitCode
         })
     }
-    componentWillUnmount() {
-        this.warnMsgListener.remove()
-    }
     renderItem(item, i) {
         // console.info(item);
         let warnColor, warnLevel;
         let envCode=this.state.envCode;
         let unitCode=this.state.unitCode;
-        switch (item.STATUS) {
-            case "0":
+        switch (item.alarmStatus) {
+            case 0:
                     warnColor='green';
                     warnLevel='正常';
                     break;   
-            case "1":
+            case 1:
                 warnColor = '#ffd700';
                 warnLevel = '一般';
                 break;
-            case "2":
+            case 2:
                 warnColor = '#ffa500';
                 warnLevel = '高危';
                 break;
-            case "3":
+            case 3:
                 warnColor = '#ff0000';
                 warnLevel = '异常';
                 break;
@@ -121,12 +113,12 @@ export default class EnvDataList extends Component {
             <View key={i} style={styles.warnItem}>
                 <Icon name='exclamation-circle' size={24} color={warnColor}></Icon>
                 <View style={styles.warnName}>
-                    <Text>{item.PDES}</Text>
+                    <Text>{item.positionDesc?item.positionDesc:item.positionName}</Text>
                 </View>
                 <View style={styles.block}></View>
                 <View style={styles.warnValue}>
                     <Image source={paramsIcon} style={styles.paramsIcon}></Image>
-                    <Text>{item.VAL}</Text>
+                    <Text>{item.itemVal}</Text>
                     <Text>{unitCode}</Text>
                 </View>
                 <View style={[styles.warnLevel, { borderTopColor: warnColor, borderRightColor: warnColor }]}><Text style={styles.warnLevelText}>{warnLevel}</Text></View>
@@ -138,9 +130,9 @@ export default class EnvDataList extends Component {
         return(
             <View style={styles.warnList}>
                     <View style={styles.warnAreaTitle}>
-                        <Text style={styles.warnAreaTitleText}>{envData.envItemName}</Text>
+                        <Text style={styles.warnAreaTitleText}>{envData.itemName}</Text>
                     </View>
-                        {envData.list.map((item, i) => this.renderItem(item, i))}
+                        {envData.itemVals.map((item, i) => this.renderItem(item, i))}
             </View>
         )
     }

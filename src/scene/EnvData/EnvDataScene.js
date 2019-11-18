@@ -8,12 +8,11 @@ import {
     StyleSheet
 } from 'react-native';
 import { PagerTabIndicator, IndicatorViewPager } from 'rn-viewpager';
-import { Area, Header } from '../../components';
+import { Area, Header,Button } from '../../components';
 import { theme, screen } from '../../common';
 import { Network, toastShort } from '../../utils';
 import api from '../../api';
 import EnvDataInfoList from './EnvDataInfoList';
-import WeatherDataList from './WeatherDataList';
 export default class EnvDataScene extends Component {
     constructor(props) {
         super(props);
@@ -33,15 +32,15 @@ export default class EnvDataScene extends Component {
             terminalId: terminalId,
             terminalSerialNum: terminalSerialNum
         })
-        let evndataUrl = api.HOST + api.ENVDATA;
+        // let evndataUrl = api.HOST + api.ENVDATA;
+        let evndataUrl=api.ENVDATAV2+orgId;
         let headers = {
-            'Content-Type': 'application/json',
             'X-Token': token
         }
         let params = {
             "orgId": orgId,
-            "terminalId":terminalId,
-            "serialNum":terminalSerialNum,
+            // "terminalId":terminalId,
+            // "serialNum":terminalSerialNum,
             
         }
         //对象转Map
@@ -53,12 +52,12 @@ export default class EnvDataScene extends Component {
         //     return strMap;
         // }
         // let envData = objToStrMap(res.data.edMap);   
-        Network.postJson(evndataUrl, params, headers, (res) => {
+        Network.get(evndataUrl, '', headers, (res) => {
             // console.info(res)
-            if (res.meta.success && Object.keys(res.data.edMap).length !== 0) {
+            if (res.meta.success && Object.keys(res.data.envItemMap).length !== 0) {
                 //对象转数组
                 let arr = [];
-                let obj=res.data.edMap;
+                let obj=res.data.envItemMap;
                 for (let i in obj) {
                     let o = {};
                     o[i] = obj[i];
@@ -112,7 +111,7 @@ export default class EnvDataScene extends Component {
         )
     } 
     componentDidMount() {
-        // console.info(bTypeName)
+        // console.info(this.props)
         storage.load({
             key:'userInfo'
         }).then((ret)=>{
@@ -134,21 +133,25 @@ export default class EnvDataScene extends Component {
                 break;
             }
           })
-        this.warnListener = DeviceEventEmitter.addListener('报警状态', (msg) => {
-            // console.info(msg)
-            (msg.meta.success && msg.data && msg.data.status !== 0) ? this.setState({ noWarn: false }) : null
-
-        });
+        //   this.aliasListener = DeviceEventEmitter.addListener('aliasSuccess', (msg) => {
+        //     this.areaChange(this.state.orgId, this.state.terminalId, this.state.terminalSerialNum)
+        // })
+        // this.timer=setInterval(() => {
+        //     this.areaChange(this.state.orgId, this.state.terminalId, this.state.terminalSerialNum)    
+        // }, 300000);
     }
     componentWillUnmount() {
-        this.warnListener && this.warnListener.remove();
+        // this.aliasListener && this.aliasListener.remove();
+        // if (this.timer) {
+        //     clearInterval(this.timer)
+        // }
     }
     /*
     环境数据界面新增生产区域和室外数据
     */
    renderTabIndicator() {
     let tabs = [
-        { text: '室外气象' }, { text: '生产区域' }
+        { text: '生产区域' },{ text: '室外气象' }
     ];
     return (
         <PagerTabIndicator
@@ -164,27 +167,9 @@ export default class EnvDataScene extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <WeatherDataList/>
                 <Area callbackParent={(orgId, terminalId, terminalSerialNum) => this.areaChange(orgId, terminalId, terminalSerialNum)}></Area>
                 {this.state.envDataList ? this.renderEnvDataInfoList(this.state.envDataList) : <View style={styles.noWarnWrapper}><Text>暂无数据</Text></View>}
             </View>
-
-            // <View style={styles.container}>
-                
-            //     <IndicatorViewPager
-            //         style={{ flex: 1, flexDirection: 'column-reverse' }}
-            //         indicator={this.renderTabIndicator()}
-            //         scrollEnabled={true}
-            //         initialPage={0}>
-            //         <View>
-            //         <WeatherDataList/>
-            //         </View>
-            //         <View>
-            //             <Area callbackParent={(orgId, terminalId, terminalSerialNum) => this.areaChange(orgId, terminalId, terminalSerialNum)}></Area>
-            //             {this.state.envDataList ? this.renderEnvDataInfoList(this.state.envDataList) : <View style={styles.noWarnWrapper}><Text>暂无数据</Text></View>}
-            //         </View>
-            //     </IndicatorViewPager>
-            // </View>
         );
     }
 }

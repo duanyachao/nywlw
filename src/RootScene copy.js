@@ -24,7 +24,7 @@ import EnvDataScene from './scene/EnvData/EnvDataScene';
 import MineScene from './scene/Mine/MineScene';
 import UserInfoScene from './scene/Mine/UserInfoScene'
 import DevicesConfScene from './scene/Mine/devicesConf/DevicesConfScene'
-import MsgScene from './scene/Mine/MsgScene'
+import MsgScene from './scene/Mine/aliasconfig/AliasScene'
 import ModifyPasswordScene from './scene/Mine/ModifyPasswordScene'
 import VideoScene from './scene/Video/VideoScene'
 import JPushModule from 'jpush-react-native';

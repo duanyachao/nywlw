@@ -44,7 +44,7 @@ export default class WarnConfigItem extends Component {
             
         }
         Network.get(api.HOST + api.GETSENSORSALARM, params, headers, (res) => {
-            console.info(res)
+            // console.info(res)
             if (res.meta.success && res.data.length>0) {
                 this.setState({
                     alarmData: res.data
@@ -130,7 +130,7 @@ export default class WarnConfigItem extends Component {
           } else {
             setTimeout(() => {
                 Network.postJson(api.HOST + api.SAVESENSORSALARM, params, headers, (res) => {
-                    console.info(res)
+                    // console.info(res)
                     if (res.meta && res.meta.success) {
                         this.setState({
                             editable:false

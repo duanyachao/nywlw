@@ -106,11 +106,11 @@ class MineScene extends Component {
                     </TouchableOpacity>
                 </View>
                 <View style={[rowStyle.mineWrapper, styles.marginBottom]}>
-                    <TouchableOpacity onPress={() => /*this.props.navigation.navigate('Msg', { title: '我的信息' })*/{}}>
+                    <TouchableOpacity onPress={() => this.props.navigation.navigate('Alias', { title: '别名设置' })}>
                         <View style={rowStyle.myItem}>
                             <View style={rowStyle.myItemLeft}>
-                                <Icon style={rowStyle.tipIcon} name='comment-o' size={18} color={theme.theme}></Icon>
-                                <Text style={rowStyle.itemTip}>我的消息</Text>
+                                <Icon style={rowStyle.tipIcon} name='star' size={18} color={theme.theme}></Icon>
+                                <Text style={rowStyle.itemTip}>区域别名</Text>
                             </View>
                             <View style={rowStyle.myItemRight}>
                                 <Text style={rowStyle.itemTip}></Text>

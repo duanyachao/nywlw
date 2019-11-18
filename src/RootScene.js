@@ -24,9 +24,10 @@ import EnvDataScene from './scene/EnvData/EnvDataScene';
 import MineScene from './scene/Mine/MineScene';
 import UserInfoScene from './scene/Mine/UserInfoScene'
 import DevicesConfScene from './scene/Mine/devicesConf/DevicesConfScene'
-import MsgScene from './scene/Mine/MsgScene'
+import AliasScene from './scene/Mine/aliasconfig/AliasScene'
 import ModifyPasswordScene from './scene/Mine/ModifyPasswordScene'
 import VideoScene from './scene/Video/VideoScene'
+import WeatherScene from './scene/weatherData/WeatherScene'
 export default class RootScene extends Component {
     constructor(props) {
         super(props)
@@ -82,7 +83,20 @@ export default class RootScene extends Component {
 const TabScene = TabNavigator({
     Env: {
         screen: EnvDataScene,
-        navigationOptions: ({navigation}) => TabOptions('报警', navigation, 'warning', true, '报警信息')
+        // navigationOptions: ({navigation}) => TabOptions('报警', navigation, 'warning', true, '报警信息')
+        navigationOptions:({navigation})=>({
+            tabBarIcon:({tintColor, focused}) => {
+                return (
+                    <Icon name='warning'
+                        size={theme.tabIconsize}
+                        style={{ color: tintColor }}>
+                    </Icon>
+                )
+            },
+            tabBarLabel:'报警',
+            header:<Header title={'报警信息'}  navigation={navigation} leftBtn={false} rightBtn='skyatlas'></Header>
+
+        })
     },
     Task: {
         screen: TaskScene,
@@ -148,7 +162,7 @@ const StackOptions = ({navigation}) => {
         borderBottomColor: '#ccc'
     };
     const headerTitle = state.params.title;
-    const headerTitleStyle = { color: '#a9a9a9', fontSize: 16 }
+    const headerTitleStyle = { color: '#a9a9a9', fontSize: 14 }
     const headerBackTitle = false;
     const headerLeft =
         <Icon.Button
@@ -171,6 +185,12 @@ const Navigator = StackNavigator({
     Splash: { screen: SplashScene },
     Login: { screen: LoginScene },
     Tab: { screen: TabScene },
+    Weather:{
+        screen:WeatherScene,
+        navigationOptions: ({navigation}) => ({
+            header: <Header title='气象信息' leftBtn={true} rightBtn={false}  navigation={navigation}></Header>
+        })
+    },
     UserInfo: {
         screen: UserInfoScene,
         navigationOptions: ({navigation}) => StackOptions({ navigation })
@@ -185,12 +205,12 @@ const Navigator = StackNavigator({
             header: null
         })
     },
-    Msg: {
-        screen: MsgScene,
+    Alias: {
+        screen: AliasScene,
         navigationOptions: ({navigation}) => StackOptions({ navigation })
     }
-
 },
+
     {
         mode: (system.isAndroid) ? 'card' : 'modal',
     }
