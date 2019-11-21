@@ -567,6 +567,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'flex-end',
         alignItems: 'center',
+        marginRight:6
     },
     devicePicker: {
         width: 140,
@@ -603,6 +604,8 @@ const styles = StyleSheet.create({
         borderRadius: 4,
         borderWidth: 1,
         borderColor: theme.theme,
+        height:40,
+        paddingLeft:6
     },
     setItemRightStyle: {
         flexDirection: 'row',
@@ -651,6 +654,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 14,
         color: '#fff'
-    }
+    },
 
 })

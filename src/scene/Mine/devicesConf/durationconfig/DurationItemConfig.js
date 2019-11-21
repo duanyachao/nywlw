@@ -236,6 +236,8 @@ const styles = StyleSheet.create({
         borderRadius:4,
         borderWidth:1,
         borderColor:theme.theme,
+        height:40,
+        paddingLeft:6
     },
     tipEndStyle:{
         

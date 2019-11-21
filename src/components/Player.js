@@ -6,10 +6,12 @@ import {
   TouchableHighlight,
   InteractionManager,
   StyleSheet,
+  ViewPropTypes as RNViewPropTypes,
   View
 } from 'react-native';
 import Video from 'react-native-video';
 import { screen } from '../common'
+const ViewPropTypes = RNViewPropTypes || View.propTypes;
 export default class Player extends Component {
   componentDidMount(){
   }

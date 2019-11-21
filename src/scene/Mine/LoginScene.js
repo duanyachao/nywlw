@@ -194,7 +194,7 @@ export default class LoginScene extends Component {
                             onChangeText={(text) => this.setState({ loginName: text })}>
                         </TextInput>
                     </View>
-                    <View style={[styles.textInput]}>
+                    <View style={styles.textInput}>
                         <View style={styles.iconWrapper}>
                             <Icon name='lock' size={24} color="#fff"></Icon>
                         </View>
@@ -208,7 +208,7 @@ export default class LoginScene extends Component {
                             onChangeText={(text) => this.setState({ passWord: text })}>
                         </TextInput>
                     </View>
-                    <View style={[styles.textInput]}>
+                    <View style={styles.textInput}>
                         <View style={styles.iconWrapper}>
                             <Icon name='mobile' size={24} color="#fff"></Icon>
                         </View>
@@ -251,18 +251,21 @@ const styles = StyleSheet.create({
     },
     textInput: {
         flexDirection: 'row',
-        alignItems: 'stretch',
+        alignItems: 'center',
         borderBottomWidth:screen.onePixel,
         borderBottomColor: 'rgba(255,255,255,.6)',
+        height:45
 
     },
     iconWrapper:{
+        backgroundColor:'transparent',
+        flex:.1,
         justifyContent:'center',
-        width:36,
         alignItems: 'center',
     },
     textStyle: {
         flex: 1,
+        fontSize:14,
         color: '#fff',
 
     },

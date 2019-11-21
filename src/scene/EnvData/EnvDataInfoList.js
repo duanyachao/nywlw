@@ -178,10 +178,12 @@ const styles = StyleSheet.create({
         borderWidth: 25,
         borderLeftColor: '#fff',
         borderBottomColor: '#fff',
+        backgroundColor:'transparent'
     },
     warnLevelText: {
+        fontSize:12,
         position: 'absolute',
         color: '#fff',
-        transform: [{ translateY: -20},{translateX: -5}, { rotate: '45deg' }]
+        transform: [{ translateY: -15},{translateX: 0}, { rotate: '45deg' }]
     }
 });
