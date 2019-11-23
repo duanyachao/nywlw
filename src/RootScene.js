@@ -23,7 +23,6 @@ import DeviceScene from './scene/Device/DeviceScene';
 import EnvDataScene from './scene/EnvData/EnvDataScene';
 import MineScene from './scene/Mine/MineScene';
 import UserInfoScene from './scene/Mine/UserInfoScene'
-// import DevicesConfScene from './scene/Mine/devicesConf/DevicesConfScene'
 import AliasScene from './scene/Mine/aliasconfig/AliasScene'
 import ModifyPasswordScene from './scene/Mine/ModifyPasswordScene'
 import VideoScene from './scene/Video/VideoScene'
@@ -34,7 +33,6 @@ import AutomateConfigScene from './scene/Mine/devicesConf/automateconfig/Automat
 import CreateAutomateconfigScene from './scene/Mine/devicesConf/automateconfig/CreateAutomateconfigScene'
 import DevicesPortsConfigScene from './scene/Mine/devicesConf/portconfig/DevicesPortsConfigScene'
 import RemoterConfigScene from './scene/Mine/devicesConf/remoteconfig/RemoterConfigScene'
-import CreateRemoterConfigScene from './scene/Mine/devicesConf/remoteconfig/CreateRemoterConfigScene'
 import DurationConfigScene from './scene/Mine/devicesConf/durationconfig/DurationConfigScene'
 import TimerConfigScene from './scene/Mine/devicesConf/timeconfig/TimerConfigScene'
 import CreateTimerConfigScene from './scene/Mine/devicesConf/timeconfig/CreateTimerConfigScene'
