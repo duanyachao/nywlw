@@ -23,11 +23,21 @@ import DeviceScene from './scene/Device/DeviceScene';
 import EnvDataScene from './scene/EnvData/EnvDataScene';
 import MineScene from './scene/Mine/MineScene';
 import UserInfoScene from './scene/Mine/UserInfoScene'
-import DevicesConfScene from './scene/Mine/devicesConf/DevicesConfScene'
+// import DevicesConfScene from './scene/Mine/devicesConf/DevicesConfScene'
 import AliasScene from './scene/Mine/aliasconfig/AliasScene'
 import ModifyPasswordScene from './scene/Mine/ModifyPasswordScene'
 import VideoScene from './scene/Video/VideoScene'
 import WeatherScene from './scene/weatherData/WeatherScene'
+import ConfigItemsScene from './scene/Mine/devicesConf/ConfigItemsScene'
+import WarnConfigScene from './scene/Mine/devicesConf/warnconfig/WarnConfigScene'
+import AutomateConfigScene from './scene/Mine/devicesConf/automateconfig/AutomateConfigScene'
+import CreateAutomateconfigScene from './scene/Mine/devicesConf/automateconfig/CreateAutomateconfigScene'
+import DevicesPortsConfigScene from './scene/Mine/devicesConf/portconfig/DevicesPortsConfigScene'
+import RemoterConfigScene from './scene/Mine/devicesConf/remoteconfig/RemoterConfigScene'
+import CreateRemoterConfigScene from './scene/Mine/devicesConf/remoteconfig/CreateRemoterConfigScene'
+import DurationConfigScene from './scene/Mine/devicesConf/durationconfig/DurationConfigScene'
+import TimerConfigScene from './scene/Mine/devicesConf/timeconfig/TimerConfigScene'
+import CreateTimerConfigScene from './scene/Mine/devicesConf/timeconfig/CreateTimerConfigScene'
 export default class RootScene extends Component {
     constructor(props) {
         super(props)
@@ -199,16 +209,64 @@ const Navigator = StackNavigator({
         screen: ModifyPasswordScene,
         navigationOptions: ({navigation}) => StackOptions({ navigation })
     },
-    DevicesConfg: {
-        screen: DevicesConfScene,
-        navigationOptions: ({navigation}) => ({
-            header: null
-        })
-    },
     Alias: {
         screen: AliasScene,
         navigationOptions: ({navigation}) => StackOptions({ navigation })
-    }
+    },
+    ConfigItems:{
+        screen: ConfigItemsScene,
+        navigationOptions: ({navigation}) => ({
+            header: <Header title='我的设置' leftBtn={true} rightBtn={false} navigation={navigation}></Header>
+        })
+    },
+    WarnConfig: {
+        screen: WarnConfigScene,
+        navigationOptions: ({navigation}) => ({
+            header: <Header title='报警设置' leftBtn={true} rightBtn={false} navigation={navigation}></Header>
+        })
+    },
+    AutomateConfig: {
+        screen: AutomateConfigScene,
+        navigationOptions: ({navigation}) => ({
+            header: <Header title='阈值设置' leftBtn={true} rightBtn={false} navigation={navigation}></Header>
+        })
+    },
+    CreateAutomate:{
+        screen: CreateAutomateconfigScene,
+        navigationOptions: ({navigation}) => ({
+            header: <Header title='新增/修改阈值设置' leftBtn={true} rightBtn={false} navigation={navigation}></Header>
+        })
+    },
+    TimerConfig: {
+        screen: TimerConfigScene,
+        navigationOptions: ({navigation}) => ({
+            header: <Header title='定时设置' leftBtn={true} rightBtn={false} navigation={navigation}></Header>
+        })
+    },
+    CreateTimerConfig: {
+        screen: CreateTimerConfigScene,
+        navigationOptions: ({navigation}) => ({
+            header: <Header title='新增/修改定时设置' leftBtn={true} rightBtn={false} navigation={navigation}></Header>
+        })
+    },
+    DurationConfig: {
+        screen: DurationConfigScene,
+        navigationOptions: ({navigation}) => ({
+            header: <Header title='时长设置' leftBtn={true} rightBtn={false} navigation={navigation}></Header>
+        })
+    },
+    DevicesPortsConfig: {
+        screen: DevicesPortsConfigScene,
+        navigationOptions: ({navigation}) => ({
+            header: <Header title='端口设置' leftBtn={true} rightBtn={false} navigation={navigation}></Header>
+        })
+    },
+    RemoterConfig: {
+        screen: RemoterConfigScene,
+        navigationOptions: ({navigation}) => ({
+            header: <Header title='遥控设置' leftBtn={true} rightBtn={false} navigation={navigation}></Header>
+        })
+    },
 },
 
     {
