@@ -72,7 +72,7 @@ export default class ConfigItemsScene extends Component {
                             </View>
                         </View>
                     </TouchableOpacity>
-                    {/* <TouchableOpacity onPress={() => navigation.navigate('DevicesPortsConfig',{'orgId':orgId})}>
+                    <TouchableOpacity onPress={() => navigation.navigate('DevicesPortsConfig',{'orgId':orgId})}>
                         <View style={styles.configItemWrapperStyle}>
                             <View style={styles.itemLeft}>
                                 <Text style={styles.itemName}>端口设置</Text>
@@ -82,7 +82,7 @@ export default class ConfigItemsScene extends Component {
                                 <Icon  name='angle-right' size={16} color="#ccc"></Icon>
                             </View>
                         </View>
-                    </TouchableOpacity> */}
+                    </TouchableOpacity>
                     <TouchableOpacity onPress={() => navigation.navigate('RemoterConfig',{'orgId':orgId})}>
                         <View style={[styles.configItemWrapperStyle,styles.marginBottom]}>
                             <View style={styles.itemLeft}>

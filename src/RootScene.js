@@ -23,6 +23,7 @@ import DeviceScene from './scene/Device/DeviceScene';
 import EnvDataScene from './scene/EnvData/EnvDataScene';
 import MineScene from './scene/Mine/MineScene';
 import UserInfoScene from './scene/Mine/UserInfoScene'
+// import DevicesConfScene from './scene/Mine/devicesConf/DevicesConfScene'
 import AliasScene from './scene/Mine/aliasconfig/AliasScene'
 import ModifyPasswordScene from './scene/Mine/ModifyPasswordScene'
 import VideoScene from './scene/Video/VideoScene'
@@ -164,7 +165,7 @@ const TabOptions = (tabBarTitle, navigation, iconName, isheader, navTitle) => {
 const StackOptions = ({navigation}) => {
     let {state, goBack} = navigation;
     const headerStyle = {
-        height: 45,
+        height: 25,
         backgroundColor: '#fff',
         borderBottomWidth: screen.onePixel,
         borderBottomColor: '#ccc'
@@ -201,15 +202,22 @@ const Navigator = StackNavigator({
     },
     UserInfo: {
         screen: UserInfoScene,
-        navigationOptions: ({navigation}) => StackOptions({ navigation })
+        navigationOptions: ({navigation}) => ({
+            header: <Header title='个人信息' leftBtn={true} rightBtn={false}  navigation={navigation}></Header>
+        })
     },
     ModifyPassword: {
         screen: ModifyPasswordScene,
-        navigationOptions: ({navigation}) => StackOptions({ navigation })
+        // navigationOptions: ({navigation}) => StackOptions({ navigation })
+        navigationOptions: ({navigation}) => ({
+            header: <Header title='修改密码' leftBtn={true} rightBtn={false}  navigation={navigation}></Header>
+        })
     },
     Alias: {
         screen: AliasScene,
-        navigationOptions: ({navigation}) => StackOptions({ navigation })
+        navigationOptions: ({navigation}) => ({
+            header: <Header title='区域设置' leftBtn={true} rightBtn={false}  navigation={navigation}></Header>
+        })
     },
     ConfigItems:{
         screen: ConfigItemsScene,

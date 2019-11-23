@@ -99,7 +99,6 @@ class ModifyPasswordScene extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <View style={styles.modifyPasswordWrapper}>
                     <View style={styles.item}>
                         <Text style={styles.tipText}>当前密码:</Text>
                         <TextInput
@@ -111,8 +110,7 @@ class ModifyPasswordScene extends Component {
                             value={this.state.currentPWD}
                             onFocus={() => this.setState({ focusCurrent: !this.state.focusCurrent })}
                             onBlur={() => this.setState({ focusCurrent: !this.state.focusCurrent })}
-                            onChangeText={(text) => this.setState({ currentPWD: text })}>
-                        </TextInput>
+                            onChangeText={(text) => this.setState({ currentPWD: text })}/>
                     </View>
                     <View style={styles.item}>
                         <Text style={styles.tipText}>新密码:</Text>
@@ -125,8 +123,7 @@ class ModifyPasswordScene extends Component {
                             value={this.state.newPWD}
                             onFocus={() => this.setState({ focusNewPWD: !this.state.focusNewPWD })}
                             onBlur={() => this.setState({ focusNewPWD: !this.state.focusNewPWD })}
-                            onChangeText={(text) => this.setState({ newPWD: text })}>
-                        </TextInput>
+                            onChangeText={(text) => this.setState({ newPWD: text })}/>
                     </View>
                     <View style={styles.item}>
                         <Text style={styles.tipText}>确认新密码:</Text>
@@ -150,7 +147,6 @@ class ModifyPasswordScene extends Component {
                         title='确定'>
                     </Button>
                 </View>
-            </View>
         );
     }
 }
@@ -159,19 +155,23 @@ class ModifyPasswordScene extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        paddingTop:10
     },
     modifyPasswordWrapper: {
         padding: 15
     },
     item: {
-        marginBottom: 8
+        paddingHorizontal:10,
+        marginBottom: 8,
+        backgroundColor:'#fff'
     },
     tipText: {
-
+        fontSize:14,
+        paddingTop:6
     },
     textInputWrapper: {
         borderBottomWidth: screen.onePixel,
-        // borderBottomColor:this.state.focusColor
+        height:40,
     },
     btnStyle: {
         marginHorizontal: 6,
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     tip: {
         color: '#999',
         fontSize: 12,
-        marginBottom: 10
+        padding: 10
     }
 });
 

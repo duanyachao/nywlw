@@ -36,7 +36,9 @@ export default class CreateTimerConfigScene extends Component {
             upperSelected: null,//时间1对应的操作的选中状态
             lowerSelected: null, //时间2对应的操作的选中状态
             upperShow:null,
-            lowerShow:null
+            lowerShow:null,
+            startDateTimePickerVisible:false,
+            endDateTimePickerVisible:false
         }
     }
     //获取设备
@@ -229,16 +231,13 @@ export default class CreateTimerConfigScene extends Component {
             }
         })
     }
-    showStartDateTimePicker = () =>
-        this.setState({ startDateTimePickerVisible: true });
+    showStartDateTimePicker = () => this.setState({ startDateTimePickerVisible: true });
 
     showEndDateTimePicker = () => this.setState({ endDateTimePickerVisible: true });
 
-    hideStartDateTimePicker = () =>
-        this.setState({ startDateTimePickerVisible: false });
+    hideStartDateTimePicker = () => this.setState({ startDateTimePickerVisible: false });
 
-    hideEndDateTimePicker = () =>
-        this.setState({ endDateTimePickerVisible: false });
+    hideEndDateTimePicker = () => this.setState({ endDateTimePickerVisible: false });
 
     handleStartDatePicked = date => {
         let startH=(date.getHours()>=10)?date.getHours():'0'+date.getHours().toString();
