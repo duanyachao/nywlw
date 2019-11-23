@@ -455,14 +455,24 @@ export default class CreateTimerConfigScene extends Component {
                         onPress={this.saveConfigData} />
                 </View>
                 <DateTimePicker
-                    mode={'time'}
+                    mode='time'
+                    is24Hour={true}
+                    locale='en_GB'
+                    cancelTextIOS='取消'
+                    confirmTextIOS='确定'
+                    titleIOS='请选择时间'
                     date={new Date()}
                     isVisible={this.state.startDateTimePickerVisible}
                     onConfirm={this.handleStartDatePicked}
                     onCancel={this.hideStartDateTimePicker}
                 />
                 <DateTimePicker
-                    mode={'time'}
+                    mode='time'
+                    is24Hour={true}
+                    locale='en_GB'
+                    cancelTextIOS='取消'
+                    confirmTextIOS='确定'
+                    titleIOS='请选择时间'
                     date={new Date()}
                     isVisible={this.state.endDateTimePickerVisible}
                     onConfirm={this.handleEndDatePicked}
