@@ -149,7 +149,7 @@ export default class AutomateConfigScene extends Component {
     }
     //删除配置
     delConfig=(id)=>{
-        console.info(id)
+        // console.info(id)
         Alert.alert(
             '提示',
             '确定删除此项设置',
@@ -176,7 +176,7 @@ export default class AutomateConfigScene extends Component {
                         },
                         body: 'id=' + id
                     }).then((res) =>res.json()).then((res)=>{
-                         console.info(res)
+                        //  console.info(res)
                         if (res.meta.success) {
                             toastShort('删除成功')
                             this.getConfigList(this.state.orgId)

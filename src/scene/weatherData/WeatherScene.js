@@ -74,7 +74,7 @@ export default class WeatherScene extends Component {
         let params = { "orgId": weatherStationOrgId};
         // console.info(weatherStationOrgId)
         Network.get(api.HOST+api.WEATHERURL, params, headers, (res) => {
-            console.info(res)
+            // console.info(res)
             if (res.meta.success && res.data.length>0) {
                 this.setState({
                     weatherData:res.data

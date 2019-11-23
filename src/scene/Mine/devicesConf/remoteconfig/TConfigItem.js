@@ -156,6 +156,9 @@ export default class TConfigItem extends Component {
             configId:confData?confData.id:null   
         })    
     }
+    componentWillUnmount(){
+        Picker.hide()
+    }
     render() {
         const {data,devices,confData}=this.props;
         const {deviceId,configStatus,deviceName}=this.state;

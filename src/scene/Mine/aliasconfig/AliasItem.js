@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Text, View,StyleSheet,FlatList,TextInput,DeviceEventEmitter } from 'react-native'
 import { Button } from './../../../components'
-import { theme, screen } from '../../../common'
+import { theme, screen} from '../../../common'
 import { Network, toastShort } from '../../../utils'
 import api from '../../../api'
 export default class AliasScene extends Component {
@@ -89,13 +89,17 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         margin:6,
         padding:6,
+        height:45,
     },
     itemTip:{
         width:100,
         fontSize:14,
-        textAlignVertical:'center',
+        // textAlignVertical:'center',
+        alignSelf:'center'
+        
     },
     textInputStyle:{
+        paddingLeft:10,
         width:120,
         fontSize:14,
         borderRadius:4,
@@ -112,14 +116,12 @@ const styles = StyleSheet.create({
         paddingHorizontal:15,
         borderRadius:5,
         justifyContent:'center',
-
-        
     },
     saveBtnStyle:{
         backgroundColor:'#289fff'
     },
     btnTxtStyle:{
         color:'#ffffff',
-        fontSize:12    
+        fontSize:14    
     },
 });

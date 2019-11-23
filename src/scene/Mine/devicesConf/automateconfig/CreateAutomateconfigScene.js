@@ -151,7 +151,7 @@ export default class CreateAutomateconfig extends Component {
             "category": category
         }
         Network.get(api.HOST + api.GETLOGICDEVICESLIST, params, headers, (res) => {
-            console.info(res)
+            // console.info(res)
             if (res.meta.success && res.data.length>0) {
                 this.setState({
                     sensorsList: res.data
@@ -212,7 +212,7 @@ export default class CreateAutomateconfig extends Component {
             "deviceTypeId": deviceTypeId
         }
         Network.get(api.HOST + api.GETECLS, params, headers, (res) => {
-            console.info(res)
+            // console.info(res)
             if (res.meta.success && res.data.length>0) {
                 this.setState({
                     ECLs: res.data

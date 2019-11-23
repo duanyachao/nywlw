@@ -23,7 +23,7 @@ export default class WarnConfigScene extends Component {
             "category": category
         }
         Network.get(api.HOST + api.GETLOGICDEVICESLIST, params, headers, (res) => {
-            console.info(res)
+            // console.info(res)
             if (res.meta.success && res.data.length>0) {
                 this.setState({
                     sensors: res.data
