@@ -99,12 +99,13 @@ export default class TimerConfigScene extends Component {
         })
     }
     //修改配置
-    editTimerConfig=(item,orgId,deviceTypeCategory,deviceTypeId,startT,endT)=>{
+    editTimerConfig=(item,orgId,deviceTypeCategory,deviceTypeId,deviceName,startT,endT)=>{
         this.props.navigation.navigate('CreateTimerConfig',{
             'orgId':orgId,
             'item':item,
             'deviceTypeCategory':deviceTypeCategory,
             'deviceTypeId':deviceTypeId,
+            'deviceName':deviceName,
             'startTimer':startT,
             'endTimer':endT
         })    
@@ -162,8 +163,8 @@ export default class TimerConfigScene extends Component {
         let startTM=item.upLimit&'0xff';
         let endTH=item.downLimit>>8;
         let endTM=item.downLimit&'0xff';
-        let startT=((startTH>10)?startTH:('0'+startTH))+':'+((startTM>10)?startTM:('0'+startTM));
-        let endT=((endTH>10)?endTH:('0'+endTH))+':'+((endTM>10)?endTM:('0'+endTM));
+        let startT=((startTH>=10)?startTH:('0'+startTH))+':'+((startTM>=10)?startTM:('0'+startTM));
+        let endT=((endTH>=10)?endTH:('0'+endTH))+':'+((endTM>=10)?endTM:('0'+endTM));
         if(devices && devices.length){
             devices.forEach(device => {
                 if (device.id==item.deviceId) {
@@ -202,7 +203,7 @@ export default class TimerConfigScene extends Component {
                         <TouchableOpacity 
                             style={styles.btnStyle}
                             activeOpacity={.7}
-                            onPress={() =>this.editTimerConfig(item,orgId,deviceTypeCategory,deviceTypeId,startT,endT) }>
+                            onPress={() =>this.editTimerConfig(item,orgId,deviceTypeCategory,deviceTypeId,deviceName,startT,endT) }>
                                 <Icon
                                     name="edit"
                                     iconStyle={styles.iconStyle}

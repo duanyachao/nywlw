@@ -1,17 +1,18 @@
 import React, { Component } from 'react'
-import { Alert,Text, View,StyleSheet,Picker,Dimensions,Switch } from 'react-native'
+import { Alert,Text, View,StyleSheet,Switch,TouchableHighlight } from 'react-native'
 import { Button } from './../../../../components'
 import { Network, toastShort } from './../../../../utils'
 import api from './../../../../api'
-import pxToDp from './../../../../common/pxToDp'
-const { width, height } = Dimensions.get('window')
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import Picker from 'react-native-picker'
 export default class TConfigItem extends Component {
     constructor(props) {
         super(props)
         this.state = {
             configId:null,
+            devices:null,
             deviceId: null,//选择的设备id
-            deviceTypeId:null,
+            deviceName:null,
             configStatus:false
         }
     }
@@ -41,6 +42,37 @@ export default class TConfigItem extends Component {
             }
         })
     }
+    //渲染设备Picker
+    renderDevices = () => {
+        const {deviceId,configStatus,deviceName}=this.state;
+        const {data,devices,confData}=this.props;
+            let devicesList = [];
+        for (var index = 0; index < devices.length; index++) {
+            devicesList.push(devices[index].deviceName)
+        }
+        Picker.init({
+            pickerConfirmBtnText: '确定',
+            pickerCancelBtnText: '取消',
+            pickerTitleText: '选择设备',
+            pickerData: devicesList,
+            selectedValue:[(deviceName)?deviceName:devices[0].deviceName],
+            onPickerConfirm: data => {
+                devices.forEach((element,index)=> {
+                    if(element.deviceName==data){
+                        this.setState({
+                            deviceId: element.id,
+                            deviceName: element.deviceName  
+                        })
+                    }
+                    
+                }, this);
+                
+            }
+
+        });
+        Picker.show();
+        
+    }
     //启用禁用删除配置
     switchConfig=()=>{
         if (this.state.configId) {
@@ -58,10 +90,16 @@ export default class TConfigItem extends Component {
                                 },
                                 body: 'id=' +this.state.configId
                             }).then((res) =>res.json()).then((res)=>{
-                                 console.info(res)
+                                //  console.info(res)
                                 if (res.meta.success) {
                                     toastShort('禁用成功')
                                     this.props.reload(this.props.orgId)
+                                    this.setState({
+                                        configId:null,
+                                        deviceId:null,
+                                        deviceName:null,
+                                        configStatus:!this.state.configStatus
+                                    })
                                 } else {
                                     toastShort(res.meta.message)
                                     return false
@@ -81,28 +119,47 @@ export default class TConfigItem extends Component {
         } else {
             this.setState({
                 configStatus:!this.state.configStatus,
-                deviceId:this.props.devices[0].id
+                deviceId:this.props.devices[0].id,
+                deviceName:this.props.devices[0].deviceName
             })    
         }
         
         
     }
-    componentDidMount(){    
+    componentDidMount(){ 
+       setTimeout(() => {
+        const {data,devices,confData}=this.props;
+        const {deviceId,configStatus,deviceName}=this.state;
+        if (confData) {
+            this.setState({
+                configStatus:true,
+                deviceId:confData.deviceId,
+                configId:confData.id
+            })
+            // console.info(devices)
+            devices.forEach((device,index)=>{
+                if (confData.deviceId==device.id) {
+                    this.setState({
+                        deviceName:devices[index].deviceName
+                    })
+                }
+            })    
+        }else{
+
+        }
+       }, 500);
+        
     }
     componentWillReceiveProps(nextProps){
-        if (nextProps.confData !==this.props.confData) {
-            this.setState({
-                configStatus:(nextProps.confData)?true:false,
-                configId:(nextProps.confData)?nextProps.confData.id:null,
-                deviceId:(nextProps.confData)?nextProps.confData.deviceId:this.props.devices[0].id,
-            })    
-        }
-        return true
+        const {data,devices,confData}=nextProps;
+        this.setState({
+            configId:confData?confData.id:null   
+        })    
     }
     render() {
         const {data,devices,confData}=this.props;
-        const {deviceId,configStatus}=this.state;
-        // console.info(confData)
+        const {deviceId,configStatus,deviceName}=this.state;
+        // console.info(deviceName)
         return (
             <View style={styles.container}>
                 <View style={styles.signalChannelItem}>
@@ -119,28 +176,21 @@ export default class TConfigItem extends Component {
                         <Text style={styles.channelTip}>{(configStatus)?'启用':'禁用'}</Text>
                     </View>
                 </View>
-                
                 <View style={styles.tDeviceItem}>
                     <Text style={styles.deviceTip}>设备名称：</Text>
-                    <View style={styles.deviceRight}>
-                        {(devices && devices.length > 0) ?
-                            ((configStatus)?
-                            <Picker
-                                selectedValue={deviceId}
-                                style={styles.devicePicker}
-                                onValueChange={(itemValue, itemIndex) => {
-                                    this.setState({
-                                        deviceId: itemValue,
-                                        deviceTypeId:devices[itemIndex].typeId
-                                    })
-                                }}>
-                                {devices.map((item) => (<Picker.Item key={item.id} value={item.id} label={item.deviceName} />))}
-                            </Picker>:
-                            <Text style={styles.nodeviceTip}>未绑定设备</Text> )
-                            :
-                            <Text style={styles.nodeviceTip}>暂无设备</Text>}
-
-                    </View>
+                    {(devices && configStatus)?
+                        <TouchableHighlight
+                        style={styles.deviceRight}
+                        activeOpacity={.6}
+                        underlayColor="transparent"
+                        onPress={() => this.renderDevices()}>
+                        <View style={styles.pickWrapper}>
+        <Text style={styles.selectedName}>{(deviceName)?deviceName:'未绑定设备'}</Text>
+                            <MaterialCommunityIcons name='arrow-right' size={24} />
+                        </View>
+                    </TouchableHighlight>
+                    :<Text style={styles.nodeviceTip}>暂无设备</Text>}
+                    
 
                 </View>
                     {(configStatus)?
@@ -162,7 +212,8 @@ const styles = StyleSheet.create({
         padding:6
     },
     signalChannelItem:{
-        flexDirection:'row'
+        flexDirection:'row',
+        paddingVertical:4
     },
     tDeviceItem:{
         height:40,
@@ -170,6 +221,7 @@ const styles = StyleSheet.create({
         alignItems:'center',
     },
     tDeviceItemStatus:{
+        
         flexDirection:'row',
         alignItems:'center',
 
@@ -179,8 +231,19 @@ const styles = StyleSheet.create({
         justifyContent:'space-between',
         alignItems:'center'
     },
-    devicePicker: {
-        width: pxToDp(200),
+    deviceRight:{
+        flexDirection:'row'
+    },
+    pickWrapper: {
+        flexDirection: 'row',
+        // backgroundColor:'red',
+        // justifyContent:'space-between',
+        alignItems: 'center',
+        // paddingRight: 6
+    },
+    selectedName:{
+        fontSize:14,
+        paddingRight:10
     },
     btnStyle:{
         alignSelf:'center',

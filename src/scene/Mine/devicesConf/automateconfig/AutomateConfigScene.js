@@ -134,14 +134,17 @@ export default class AutomateConfigScene extends Component {
         })
     }
     //修改配置
-    editConfig=(item,orgId,deviceTypeCategory,deviceTypeId,sensorTypeId)=>{
-        console.info(sensorTypeId)
+    editConfig=(item,orgId,deviceTypeCategory,deviceTypeId,sensorTypeId,deviceName,sensorName,eclName)=>{
+        // console.info(sensorTypeId)
         this.props.navigation.navigate('CreateAutomate',{
             'orgId':orgId,
             'item':item,
             'deviceTypeCategory':deviceTypeCategory,
             'deviceTypeId':deviceTypeId,
-            'sensorTypeId':sensorTypeId
+            'sensorTypeId':sensorTypeId,
+            'deviceName':deviceName,
+            'sensorName':sensorName,
+            'ECLsName':eclName
         })    
     }
     //删除配置
@@ -250,7 +253,7 @@ export default class AutomateConfigScene extends Component {
                         <TouchableOpacity 
                             style={styles.btnStyle}
                             activeOpacity={.7}
-                            onPress={() =>this.editConfig(item,orgId,deviceTypeCategory,deviceTypeId,sensorTypeId) }>
+                            onPress={() =>this.editConfig(item,orgId,deviceTypeCategory,deviceTypeId,sensorTypeId,deviceName,sensorName,eclName) }>
                                 <Icon
                                     name="edit"
                                     iconStyle={styles.iconStyle}

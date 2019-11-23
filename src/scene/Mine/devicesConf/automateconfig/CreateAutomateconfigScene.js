@@ -7,19 +7,20 @@ import {
     TouchableOpacity,
     TouchableHighlight,
     Modal,
-    FlatList,
-    Picker
+    FlatList
 } from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { screen, theme } from './../../../../common'
 import { Network, toastShort } from './../../../../utils'
 import api from './../../../../api'
 import { Button } from './../../../../components'
+import { pickerStyle } from './../../../../common/theme'
+import Picker from 'react-native-picker'
 export default class CreateAutomateconfig extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            configId:null,//配置项id
+            configId: null,//配置项id
             orgId: null,//网点id
             devicesList: null,//设备列表(开关类、行程类)
             sensorsList: null,//传感器列表
@@ -30,9 +31,11 @@ export default class CreateAutomateconfig extends Component {
             upperAction: null,//上限绑定的操作
             lowerAction: null,//下限绑定的操作
             sensorId: null,//选择的传感器id
+            sensorName: null,
             sensorTypeId: null,//选择的传感器对应的设备类型id
             ECLs: null,//传感器对应的环境参数列表
             ECLsId: null,//选择的环境参数id
+            ECLsName: null,
             upper: 0,//上限值
             upperSelected: null,//自定义上限值对应的操作的选中状态
             lower: 0,//下限值
@@ -51,20 +54,59 @@ export default class CreateAutomateconfig extends Component {
         }
         Network.get(api.HOST + api.GETLOGICDEVICESLIST, params, headers, (res) => {
             // console.info(res)
-            if (res.meta.success) {
+            if (res.meta.success && res.data.length>0) {
                 this.setState({
                     devicesList: res.data
                 })
                 if (!this.state.deviceId) {
                     this.setState({
                         deviceId: res.data[0].id,
-                        deviceTypeId: res.data[0].typeId
+                        deviceTypeId: res.data[0].typeId,
+                        deviceName: res.data[0].deviceName
                     })
                     this.getDeviceActionList(res.data[0].typeId);
                     this.getSensorsList(orgId, 1);
                 }
             }
         })
+    }
+    //渲染设备Picker
+    renderDevices = () => {
+        const {orgId,deviceTypeId,devicesList,deviceName}=this.state;
+        if (!deviceTypeId) {
+            toastShort('请先选择设备类型')    
+        }
+        if (deviceTypeId && devicesList) {
+            let devices = [];
+        for (var index = 0; index < devicesList.length; index++) {
+            devices.push(devicesList[index].deviceName)
+        }
+        Picker.init({
+            pickerConfirmBtnText: '确定',
+            pickerCancelBtnText: '取消',
+            pickerTitleText: '选择设备',
+            pickerData: devices,
+            selectedValue:[(deviceName)?deviceName:devicesList[0].deviceName],
+            onPickerConfirm: data => {
+                devicesList.forEach((element,index)=> {
+                    if(element.deviceName==data){
+                        this.setState({
+                            deviceId: devicesList[index].id,
+                            deviceTypeId: devicesList[index].typeId,
+                            deviceName: devicesList[index].deviceName   
+                        })
+                        this.getDeviceActionList(devicesList[index].typeId);
+                        this.getSensorsList(orgId, 1);
+                    }
+                    
+                }, this);
+                
+            }
+
+        });
+        Picker.show();    
+        }
+        
     }
     //获取设备操作
     getDeviceActionList = (deviceTypeId) => {
@@ -80,20 +122,20 @@ export default class CreateAutomateconfig extends Component {
                     deviceActionList: res.data
                 })
                 if (this.state.deviceActionList) {
-                    this.state.deviceActionList.forEach((deviceAction,index) => {
-                        if(this.state.upperAction==deviceAction.id){
+                    this.state.deviceActionList.forEach((deviceAction, index) => {
+                        if (this.state.upperAction == deviceAction.id) {
                             this.setState({
-                                upperSelected:index
+                                upperSelected: index
                             })
                         }
-                        if(this.state.lowerAction==deviceAction.id){
+                        if (this.state.lowerAction == deviceAction.id) {
                             this.setState({
-                                lowerSelected:index
-                            })    
+                                lowerSelected: index
+                            })
                         }
-                    });    
+                    });
                 } else {
-                    console.info('没状态')    
+                    // console.info('没状态')
                 }
             }
         })
@@ -110,19 +152,56 @@ export default class CreateAutomateconfig extends Component {
         }
         Network.get(api.HOST + api.GETLOGICDEVICESLIST, params, headers, (res) => {
             console.info(res)
-            if (res.meta.success) {
+            if (res.meta.success && res.data.length>0) {
                 this.setState({
                     sensorsList: res.data
                 })
                 if (!this.state.sensorId) {
                     this.setState({
                         sensorId: res.data[0].id,
-                        sensorTypeId: res.data[0].typeId
+                        sensorTypeId: res.data[0].typeId,
+                        sensorName: res.data[0].deviceName
                     })
-                    this.getECLsList(res.data[0].typeId)   
+                    this.getECLsList(res.data[0].typeId)
                 }
             }
         })
+    }
+    //渲染传感器Picker
+    renderSensors = () => {
+        const {orgId,deviceId,sensorsList,sensorName}=this.state;
+        console.info(sensorsList)
+        if (!deviceId) {
+            toastShort('请先选择设备')    
+        }
+        if ( sensorsList) {
+            let sensors = [];
+        for (var index = 0; index < sensorsList.length; index++) {
+            sensors.push(sensorsList[index].deviceName)
+        }
+        Picker.init({
+            pickerConfirmBtnText: '确定',
+            pickerCancelBtnText: '取消',
+            pickerTitleText: '选择传感器',
+            pickerData: sensors,
+            selectedValue:[(sensorName)?sensorName:sensorsList[0].deviceName],
+            onPickerConfirm: data => {
+                sensorsList.forEach((element,index)=> {
+                    if(element.deviceName==data){
+                        this.setState({
+                            sensorId: sensorsList[index].id,
+                            sensorName: sensorsList[index].deviceName   
+                        })
+                        this.getECLsList(sensorsList[index].typeId)
+                    }
+                }, this);
+                
+            }
+
+        });
+        Picker.show();    
+        }
+        
     }
     //获取传感器环境参数
     getECLsList = (deviceTypeId) => {
@@ -133,39 +212,75 @@ export default class CreateAutomateconfig extends Component {
             "deviceTypeId": deviceTypeId
         }
         Network.get(api.HOST + api.GETECLS, params, headers, (res) => {
-            // console.info(res)
-            if (res.meta.success) {
+            console.info(res)
+            if (res.meta.success && res.data.length>0) {
                 this.setState({
                     ECLs: res.data
                 })
                 if (!this.state.ECLsId) {
                     this.setState({
-                        ECLsId:res.data[0].id    
+                        ECLsId: res.data[0].id,
+                        ECLsName: res.data[0].name
                     })
                 }
             }
         })
     }
+    //渲染传感器采集项Picker
+    renderECls = () => {
+        const {sensorId,ECLs,ECLsName}=this.state;
+        if (!sensorId) {
+            toastShort('请先选择传感器')    
+        }
+        if ( ECLs) {
+            let ecls = [];
+        for (var index = 0; index < ECLs.length; index++) {
+            ecls.push(ECLs[index].name)
+        }
+        Picker.init({
+            pickerConfirmBtnText: '确定',
+            pickerCancelBtnText: '取消',
+            pickerTitleText: '选择采集项',
+            pickerData: ecls,
+            selectedValue:[(ECLsName)?ECLsName:ECLs[0].name],
+            onPickerConfirm: data => {
+                ECLs.forEach((element,index)=> {
+                    if(element.name==data){
+                        this.setState({
+                            ECLsId: ECLs[index].id,
+                            ECLsName: ECLs[index].name   
+                        })
+                        // this.getECLsList(sensorsList[index].typeId)
+                    }
+                }, this);
+                
+            }
+
+        });
+        Picker.show();    
+        }
+        
+    }
     //选择设备类型
     selectDeviceType = (orgId, category) => {
         this.setState({
             devicesTypeSelected: category,
-            devicesList:null,
-            deviceId:null,
-            sensorsList:null,
-            sensorId:null,
-            ECLs:null,
-            ECLsId:null,
-            deviceActionList:null,
-            upperAction:null,
-            upper:0,
-            lower:0,
-            upperSelected:null,
-            lowerSelected:null,
-            lowerAction:null
+            devicesList: null,
+            deviceId: null,
+            sensorsList: null,
+            sensorId: null,
+            ECLs: null,
+            ECLsId: null,
+            deviceActionList: null,
+            upperAction: null,
+            upper: 0,
+            lower: 0,
+            upperSelected: null,
+            lowerSelected: null,
+            lowerAction: null
         })
         this.getDevicesList(orgId, category)
-        
+
     }
     //选择操作
     selectDeviceAction(item, index, configType) {
@@ -185,7 +300,7 @@ export default class CreateAutomateconfig extends Component {
         }
     }
     //提交配置
-    saveConfigData=()=>{
+    saveConfigData = () => {
         const {
             orgId,
             configId,
@@ -227,7 +342,7 @@ export default class CreateAutomateconfig extends Component {
             toastShort('上限值设置不正确,请重新设置');
             return false
         }
-        if (parseInt(upper) < parseInt(lower) || parseInt(lower) > parseInt(upper) || parseInt(upper)== parseInt(lower)) {
+        if (parseInt(upper) < parseInt(lower) || parseInt(lower) > parseInt(upper) || parseInt(upper) == parseInt(lower)) {
             toastShort('上下限值设置不正确,请重新设置');
             return false
         }
@@ -239,7 +354,7 @@ export default class CreateAutomateconfig extends Component {
             toastShort('设置失败,下限操作未设置');
             return false
         }
-        if (lowerAction==upperAction) {
+        if (lowerAction == upperAction) {
             toastShort('设置失败,上下限操作设置不能相同');
             return false
         }
@@ -248,59 +363,68 @@ export default class CreateAutomateconfig extends Component {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         };
-        let params ={
-            "id":(configId)?configId:null,
+        let params = {
+            "id": (configId) ? configId : null,
             "columnDesId": ECLsId,
             "deviceId": deviceId,
-            "downDeviceActionId":lowerAction,
-            "downLimit":parseInt(lower),
+            "downDeviceActionId": lowerAction,
+            "downLimit": parseInt(lower),
             "orgId": orgId,
             "sensorId": sensorId,
             "upDeviceActionId": upperAction,
-            "upLimit":parseInt(upper)
-          }
+            "upLimit": parseInt(upper)
+        }
         Network.postJson(api.HOST + api.SAVECONFAUTOMATION, params, headers, (res) => {
             // console.info(res)
             if (res.meta.success) {
                 toastShort('保存成功')
-                this.props.navigation.navigate('AutomateConfig',{'orgId':orgId})
-            }else{
+                this.props.navigation.navigate('AutomateConfig', { 'orgId': orgId })
+            } else {
                 toastShort(res.meta.message)
             }
         })
     }
-    componentDidMount(){
+    componentDidMount() {
         const { navigation } = this.props;
-        let config=navigation.state.params.item;
+        let config = navigation.state.params.item;
         let orgId = navigation.state.params.orgId;
-        let deviceTypeCategory=navigation.state.params.deviceTypeCategory;
-        let sensorTypeId=navigation.state.params.sensorTypeId;
-        let deviceTypeId=navigation.state.params.deviceTypeId;
+        let deviceTypeCategory = navigation.state.params.deviceTypeCategory;
+        let sensorTypeId = navigation.state.params.sensorTypeId;
+        let deviceTypeId = navigation.state.params.deviceTypeId;
+        let deviceName=navigation.state.params.deviceName;
+        let sensorName=navigation.state.params.sensorName;
+        let ECLsName=navigation.state.params.ECLsName;
         this.setState({
-            orgId:orgId,
-            deviceTypeId:deviceTypeId,
-            devicesTypeSelected:deviceTypeCategory,
-            sensorTypeId:sensorTypeId,
+            orgId: orgId,
+            deviceTypeId: deviceTypeId,
+            devicesTypeSelected: deviceTypeCategory,
+            sensorTypeId: sensorTypeId,
         })
         if (config) {
             this.setState({
-                configId:config.id,
-                deviceId:config.deviceId,
-                sensorId:config.sensorId,
-                ECLsId:config.columnDesId,
-                upper:config.upLimit,
-                upperAction:config.upDeviceActionId,
-                lower:config.downLimit,
-                lowerAction:config.downDeviceActionId
+                configId: config.id,
+                deviceId: config.deviceId,
+                deviceName:deviceName,
+                sensorId: config.sensorId,
+                sensorName:sensorName,
+                ECLsId: config.columnDesId,
+                ECLsName:ECLsName,
+                upper: config.upLimit,
+                upperAction: config.upDeviceActionId,
+                lower: config.downLimit,
+                lowerAction: config.downDeviceActionId
             })
-            this.getDevicesList(orgId, deviceTypeCategory)   
+            this.getDevicesList(orgId, deviceTypeCategory)
             this.getSensorsList(orgId, 1);
             this.getDeviceActionList(deviceTypeId);
             this.getECLsList(sensorTypeId);
-            
-        }else{
+
+        } else {
             // console.info(1)
         }
+    }
+    componentWillUnmount(){
+        Picker.hide()
     }
     render() {
         const {
@@ -308,12 +432,15 @@ export default class CreateAutomateconfig extends Component {
             configId,
             devicesTypeSelected,
             deviceId,
+            deviceName,
             deviceActionList,
             devicesList,
             sensorsList,
             sensorId,
+            sensorName,
             ECLs,
             ECLsId,
+            ECLsName,
             upper,
             lower,
             upperSelected,
@@ -321,12 +448,12 @@ export default class CreateAutomateconfig extends Component {
             upperAction,
             lowerAction
         } = this.state;
-        
+
         return (
             <View style={styles.container}>
                 <View style={styles.selectDeviceTypeStyle}>
                     <View style={styles.deviceTypeLeft}>
-                        <Text style={styles.deviceTypeTipStyle}>选择设备类型：</Text>
+                        <Text style={styles.deviceTypeTipStyle}>设备类型：</Text>
                     </View>
                     <View style={styles.deviceTypeRight}>
                         <TouchableOpacity
@@ -361,69 +488,43 @@ export default class CreateAutomateconfig extends Component {
 
                 </View>
                 <View style={styles.selectDeviceStyle}>
-                    <View style={styles.deviceLeft}>
-                        <Text style={styles.deviceTipStyle}>请选择设备</Text>
-                    </View>
-                    <View style={styles.deviceRight}>
-                        {(devicesList && devicesList.length > 0) ?
-                            <Picker
-                                selectedValue={deviceId}
-                                style={styles.devicePicker}
-                                onValueChange={(itemValue, itemIndex) => {
-                                    this.setState({
-                                        deviceId: itemValue,
-                                        deviceTypeId: devicesList[itemIndex].typeId
-                                    })
-                                    // console.info(devicesList[itemIndex].typeId)
-                                    this.getDeviceActionList(devicesList[itemIndex].typeId);
-                                    this.getSensorsList(orgId, 1);
-                                }}>
-                                {devicesList.map((item) => (<Picker.Item key={item.id} value={item.id} label={item.deviceName} />))}
-                            </Picker> :
-                            <Text style={styles.nodeviceTip}>请先选择设备类型</Text>}
-
-                    </View>
-
+                    <Text style={styles.deviceTipStyle}>选择设备：</Text>
+                    <TouchableHighlight
+                        style={styles.deviceRight}
+                        activeOpacity={.6}
+                        underlayColor="transparent"
+                        onPress={() => this.renderDevices()}>
+                        <View style={styles.pickWrapper}>
+                            <Text style={styles.selectedName}>{(deviceName) ? deviceName : '暂无设备'}</Text>
+                            <MaterialCommunityIcons name='arrow-right' size={24} />
+                        </View>
+                    </TouchableHighlight>
                 </View>
                 <View style={styles.selectDeviceStyle}>
-                    <View style={styles.deviceLeft}>
-                        <Text style={styles.deviceTipStyle}>选择传感器</Text>
-                    </View>
-                    <View style={styles.deviceRight}>
-                        {(sensorsList && sensorsList.length > 0) ?
-                            <Picker
-                                selectedValue={sensorId}
-                                style={styles.devicePicker}
-                                onValueChange={(itemValue, itemIndex) => {
-                                    this.setState({
-                                        sensorId: itemValue,
-                                        sensorTypeId: sensorsList[itemIndex].typeId
-                                    })
-                                    this.getECLsList(sensorsList[itemIndex].typeId)
-                                }}>
-                                {sensorsList.map((item) => (<Picker.Item key={item.id} value={item.id} label={item.deviceName} />))}
-                            </Picker> :
-                            <Text style={styles.nodeviceTip}>请先选择设备</Text>}
-                    </View>
-
+                    <Text style={styles.deviceTipStyle}>选择传感器：</Text>
+                    <TouchableHighlight
+                        style={styles.deviceRight}
+                        activeOpacity={.6}
+                        underlayColor="transparent"
+                        onPress={() => this.renderSensors()}>
+                        <View style={styles.pickWrapper}>
+                            <Text style={styles.selectedName}>{(sensorName) ? sensorName : '暂无传感器'}</Text>
+                            <MaterialCommunityIcons name='arrow-right' size={24} />
+                        </View>
+                    </TouchableHighlight>
                 </View>
-                <View style={[styles.selectDeviceStyle, theme.noBorerBottom]}>
-                    <View style={styles.deviceLeft}>
-                        <Text style={styles.deviceTipStyle}>选择环境参数</Text>
-                    </View>
-                    <View style={styles.deviceRight}>
-                        {(ECLs && ECLs.length > 0) ?
-                            <Picker
-                                selectedValue={ECLsId}
-                                style={styles.devicePicker}
-                                onValueChange={(itemValue, itemIndex) => {
-                                    this.setState({ ECLsId: itemValue })
-                                }}>
-                                {ECLs.map((item) => (<Picker.Item key={item.id} value={item.id} label={item.name} />))}
-                            </Picker> :
-                            <Text style={styles.nodeviceTip}>请先选择传感器</Text>}
-
-                    </View>
+                <View style={styles.selectDeviceStyle}>
+                    <Text style={styles.deviceTipStyle}>选择环境参数：</Text>
+                    <TouchableHighlight
+                        style={styles.deviceRight}
+                        activeOpacity={.6}
+                        underlayColor="transparent"
+                        onPress={() => this.renderECls()}>
+                        <View style={styles.pickWrapper}>
+                            <Text style={styles.selectedName}>{ECLsName ? ECLsName : '暂无环境参数'}</Text>
+                            <MaterialCommunityIcons name='arrow-right' size={24} />
+                        </View>
+                    </TouchableHighlight>
                 </View>
                 {(ECLsId) ?
                     <View style={styles.setContentStyle}>
@@ -524,16 +625,17 @@ export default class CreateAutomateconfig extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        paddingHorizontal: 10
     },
     selectDeviceTypeStyle: {
-        height: 60,
+        height: 45,
         flexDirection: 'row',
+        justifyContent: 'space-between',
         alignItems: 'center',
         borderBottomWidth: screen.onePixel,
         borderBottomColor: theme.bgGray2,
     },
     deviceTypeLeft: {
-        paddingLeft: 10
     },
     deviceTypeRight: {
         marginLeft: 20,
@@ -545,39 +647,41 @@ const styles = StyleSheet.create({
     deviceTypeCheckboxStyle: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginHorizontal: 10
+        marginLeft: 10
     },
     deviceTypeName: {
         fontSize: 14,
         paddingLeft: 6
     },
     selectDeviceStyle: {
-        height: 60,
+        height: 45,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
         borderBottomWidth: screen.onePixel,
         borderBottomColor: theme.bgGray2
     },
-
     deviceLeft: {
-        paddingLeft: 10,
+        // paddingLeft: 10,
     },
     deviceRight: {
         flexDirection: 'row',
-        justifyContent: 'flex-end',
+        // justifyContent: 'flex-end',
         alignItems: 'center',
-        marginRight:6
-    },
-    devicePicker: {
-        width: 140,
+        // marginRight:6
     },
     deviceTipStyle: {
-        fontSize: 14
+        fontSize: 14,
     },
-    nodeviceTip: {
-        color: '#ccc',
-        paddingRight: 6
+    pickWrapper: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        // paddingRight: 6
+    },
+    selectedName: {
+        // color:theme.colorG,
+        fontSize: 14,
+        marginRight: 10
     },
     setContentStyle: {
         paddingBottom: 10,
@@ -593,8 +697,8 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     setItemLeftTipStyle: {
-        
-        paddingLeft:10,
+
+        paddingLeft: 10,
         justifyContent: 'center'
     },
     textInputStyle: {
@@ -604,8 +708,8 @@ const styles = StyleSheet.create({
         borderRadius: 4,
         borderWidth: 1,
         borderColor: theme.theme,
-        height:40,
-        paddingLeft:6
+        height: 40,
+        paddingLeft: 6
     },
     setItemRightStyle: {
         flexDirection: 'row',
@@ -618,15 +722,15 @@ const styles = StyleSheet.create({
     },
     noConfigTip: {
         color: theme.colorG,
-        padding:10
+        padding: 10
 
     },
     actionCheckboxStyle: {
-        
+
         flexDirection: 'row',
-        justifyContent:'flex-end',
+        justifyContent: 'flex-end',
         alignItems: 'center',
-        marginHorizontal:5
+        marginHorizontal: 5
     },
     actionName: {
         fontSize: 14,

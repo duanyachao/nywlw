@@ -57,7 +57,7 @@ export default class RemoterConfigScene extends Component {
         }
         if (confType==2) {
             Network.get(api.HOST + api.GETALLDEVICES, params, headers, (res) => {
-                console.info(res)
+                // console.info(res)
                 if (res.meta.success) {
                     this.setState({
                         allDevices: res.data
@@ -74,7 +74,7 @@ export default class RemoterConfigScene extends Component {
                 numColumns={2}
                 initialNumToRender={30}
                 keyExtractor={(item, index) =>index}
-                onRefresh={() => { this.getDevicesList(this.state.orgId,3) }}
+                onRefresh={() => { this.getConfRemote(this.state.orgId) }}
                 refreshing={false}
                 ref="confDataList"
                 renderItem={(item) => this.renderTdeviceItem(item)} />

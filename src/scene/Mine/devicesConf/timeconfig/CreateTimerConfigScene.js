@@ -8,8 +8,7 @@ import {
     TouchableOpacity,
     TouchableHighlight,
     Modal,
-    FlatList,
-    Picker
+    FlatList
 } from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { screen, theme } from '../../../../common'
@@ -17,6 +16,7 @@ import { Network, toastShort } from '../../../../utils'
 import api from '../../../../api'
 import { Button } from '../../../../components'
 import DateTimePicker from 'react-native-modal-datetime-picker'
+import Picker from 'react-native-picker'
 export default class CreateTimerConfigScene extends Component {
     constructor(props) {
         super(props)
@@ -27,6 +27,7 @@ export default class CreateTimerConfigScene extends Component {
             devicesTypeSelected: null,//自定义设备类型
             deviceTypeId: null,//设备类型id
             deviceId: null,//选择的设备id
+            deviceName:null,
             deviceActionList: null,//选择的设备对应的操作列表
             upperAction: null,//上限绑定的操作
             lowerAction: null,//下限绑定的操作
@@ -48,7 +49,7 @@ export default class CreateTimerConfigScene extends Component {
             "category": category
         }
         Network.get(api.HOST + api.GETLOGICDEVICESLIST, params, headers, (res) => {
-            console.info(res)
+            // console.info(res)
             if (res.meta.success) {
                 this.setState({
                     devicesList: res.data
@@ -56,6 +57,7 @@ export default class CreateTimerConfigScene extends Component {
                 if (!this.state.deviceId) {
                     this.setState({
                         deviceId: res.data[0].id,
+                        deviceName:res.data[0].deviceName,
                         deviceTypeId: res.data[0].typeId
                     })
                     this.getDeviceActionList(res.data[0].typeId);
@@ -90,11 +92,49 @@ export default class CreateTimerConfigScene extends Component {
                         }
                     });
                 } else {
-                    console.info('没状态')
+                    // console.info('没状态')
                 }
             }
         })
 
+    }
+    //渲染设备Picker
+    renderDevices = () => {
+        const {orgId,deviceTypeId,devicesList,deviceName}=this.state;
+        if (!deviceTypeId) {
+            toastShort('请先选择设备类型')    
+        }
+        if (deviceTypeId && devicesList) {
+            let devices = [];
+        for (var index = 0; index < devicesList.length; index++) {
+            devices.push(devicesList[index].deviceName)
+        }
+        Picker.init({
+            pickerConfirmBtnText: '确定',
+            pickerCancelBtnText: '取消',
+            pickerTitleText: '选择设备',
+            pickerData: devices,
+            selectedValue:[(deviceName)?deviceName:devicesList[0].deviceName],
+            onPickerConfirm: data => {
+                devicesList.forEach((element,index)=> {
+                    if(element.deviceName==data){
+                        this.setState({
+                            deviceId: devicesList[index].id,
+                            deviceTypeId: devicesList[index].typeId,
+                            deviceName: devicesList[index].deviceName   
+                        })
+                        this.getDeviceActionList(devicesList[index].typeId);
+                        // this.getSensorsList(orgId, 1);
+                    }
+                    
+                }, this);
+                
+            }
+
+        });
+        Picker.show();    
+        }
+        
     }
     //选择设备类型
     selectDeviceType = (orgId, category) => {
@@ -102,6 +142,7 @@ export default class CreateTimerConfigScene extends Component {
             devicesTypeSelected: category,
             devicesList: null,
             deviceId: null,
+            deviceName:null,
             deviceActionList: null,
             upperAction: null,
             upper: null,
@@ -158,6 +199,10 @@ export default class CreateTimerConfigScene extends Component {
         }
         if (!lowerAction) {
             toastShort('设置失败,定时操作2未设置');
+            return false
+        }
+        if (lowerAction == upperAction) {
+            toastShort('设置失败,操作1操作2设置不能相同');
             return false
         }
         let headers = {
@@ -225,6 +270,7 @@ export default class CreateTimerConfigScene extends Component {
         let orgId = navigation.state.params.orgId;
         let deviceTypeCategory = navigation.state.params.deviceTypeCategory;
         let deviceTypeId = navigation.state.params.deviceTypeId;
+        let deviceName=navigation.state.params.deviceName;
         let startTimer=navigation.state.params.startTimer;
         let endTimer=navigation.state.params.endTimer;
         // console.info(startTimer,endTimer)
@@ -237,6 +283,7 @@ export default class CreateTimerConfigScene extends Component {
             this.setState({
                 configId: config.id,
                 deviceId: config.deviceId,
+                deviceName:deviceName,
                 upper: config.upLimit,
                 upperAction: config.upDeviceActionId,
                 lower: config.downLimit,
@@ -251,12 +298,16 @@ export default class CreateTimerConfigScene extends Component {
             // console.info(1)
         }
     }
+    componentWillUnmount(){
+        Picker.hide()
+    }
     render() {
         const {
             orgId,
             configId,
             devicesTypeSelected,
             deviceId,
+            deviceName,
             deviceActionList,
             devicesList,
             upper,
@@ -308,26 +359,17 @@ export default class CreateTimerConfigScene extends Component {
 
                 </View>
                 <View style={styles.selectDeviceStyle}>
-                    <View style={styles.deviceLeft}>
-                        <Text style={styles.deviceTipStyle}>请选择设备</Text>
-                    </View>
-                    <View style={styles.deviceRight}>
-                        {(devicesList && devicesList.length > 0) ?
-                            <Picker
-                                selectedValue={deviceId}
-                                style={styles.devicePicker}
-                                onValueChange={(itemValue, itemIndex) => {
-                                    this.setState({
-                                        deviceId: itemValue,
-                                        deviceTypeId: devicesList[itemIndex].typeId
-                                    })
-                                    this.getDeviceActionList(devicesList[itemIndex].typeId);
-                                }}>
-                                {devicesList.map((item) => (<Picker.Item key={item.id} value={item.id} label={item.deviceName} />))}
-                            </Picker> :
-                            <Text style={styles.nodeviceTip}>请先选择设备类型</Text>}
-
-                    </View>
+                    <Text style={styles.deviceTipStyle}>请选择设备</Text>
+                    <TouchableHighlight
+                        style={styles.deviceRight}
+                        activeOpacity={.6}
+                        underlayColor="transparent"
+                        onPress={() => this.renderDevices()}>
+                        <View style={styles.pickWrapper}>
+                            <Text style={styles.selectedName}>{deviceName ? deviceName : '暂无设备'}</Text>
+                            <MaterialCommunityIcons name='arrow-right' size={24} />
+                        </View>
+                    </TouchableHighlight>
 
                 </View>
                 {(deviceId) ?
@@ -434,16 +476,18 @@ export default class CreateTimerConfigScene extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        paddingHorizontal: 10
     },
     selectDeviceTypeStyle: {
-        height: 60,
+        height: 45,
         flexDirection: 'row',
+        justifyContent: 'space-between',
         alignItems: 'center',
         borderBottomWidth: screen.onePixel,
         borderBottomColor: theme.bgGray2,
     },
     deviceTypeLeft: {
-        paddingLeft: 10
+        // paddingLeft: 10
     },
     deviceTypeRight: {
         marginLeft: 20,
@@ -465,7 +509,7 @@ const styles = StyleSheet.create({
         paddingLeft: 6
     },
     selectDeviceStyle: {
-        height: 60,
+        height: 45,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -474,25 +518,28 @@ const styles = StyleSheet.create({
     },
 
     deviceLeft: {
-        paddingLeft: 10,
+        // paddingLeft: 10,
     },
     deviceRight: {
         flexDirection: 'row',
-        justifyContent: 'flex-end',
+        // justifyContent: 'flex-end',
         alignItems: 'center',
-    },
-    devicePicker: {
-        width: 140,
+        // marginRight:6
     },
     deviceTipStyle: {
-        fontSize: 14
+        fontSize: 14,
     },
-    nodeviceTip: {
-        color: '#ccc',
-        paddingRight: 6
+    pickWrapper: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        // paddingRight: 6
+    },
+    selectedName: {
+        // color:theme.colorG,
+        fontSize: 14,
+        marginRight: 10
     },
     setContentStyle: {
-        flex: 1,
         paddingBottom: 10,
         borderBottomWidth: screen.onePixel,
         borderBottomColor: theme.bgGray2,
